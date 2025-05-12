@@ -4,46 +4,35 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class RectangleAreaQuestionPanel extends JPanel {
+public class TriangleAreaQuestionPanel extends JPanel {
     private JFrame parentFrame;
-    private int length, width, correctArea, attempts = 0;
+    private int base, height, correctArea, attempts = 0;
     private JLabel timerLabel, feedbackLabel, questionLabel;
     private JTextField answerField;
     private JButton submitButton, nextButton, homeButton;
     private Timer timer;
-    private int timeLeft = 180; // 3分钟
-    // 讲解区
+    private int timeLeft = 180;
     private JPanel explainPanel;
     private JLabel formulaLabel, calcLabel;
-    private RectangleDrawingPanel drawingPanel;
+    private TriangleDrawingPanel drawingPanel;
 
-    public RectangleAreaQuestionPanel(JFrame frame) {
+    public TriangleAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
-
-        // 随机生成参数
-        length = 1 + (int)(Math.random() * 20);
-        width = 1 + (int)(Math.random() * 20);
-        correctArea = length * width;
-
-        // 顶部倒计时
+        base = 1 + (int)(Math.random() * 20);
+        height = 1 + (int)(Math.random() * 20);
+        correctArea = (int)(0.5 * base * height);
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(timerLabel, BorderLayout.NORTH);
-
-        // 中部主面板
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.add(Box.createVerticalStrut(10));
-
-        // 题干区
-        questionLabel = new JLabel("The length of the rectangle is " + length + ", the width is " + width + ". Please calculate its area.", SwingConstants.CENTER);
+        questionLabel = new JLabel("The base of the triangle is " + base + ", the height is " + height + ". Please calculate its area.", SwingConstants.CENTER);
         questionLabel.setFont(new Font("Arial", Font.BOLD, 18));
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
         centerPanel.add(Box.createVerticalStrut(20));
-
-        // 输入区
         JPanel inputPanel = new JPanel();
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         answerField = new JTextField();
@@ -55,23 +44,19 @@ public class RectangleAreaQuestionPanel extends JPanel {
         inputPanel.add(answerField);
         inputPanel.add(submitButton);
         centerPanel.add(inputPanel);
-
-        // 反馈区
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
-
-        // 讲解区（初始隐藏）
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         explainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        formulaLabel = new JLabel("Formula: A = length × width", SwingConstants.CENTER);
+        formulaLabel = new JLabel("Formula: A = 1/2 × base × height", SwingConstants.CENTER);
         formulaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         formulaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        drawingPanel = new RectangleDrawingPanel(length, width);
+        drawingPanel = new TriangleDrawingPanel(base, height);
         drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        calcLabel = new JLabel("Substitute: A = " + length + " × " + width + " = " + correctArea, SwingConstants.CENTER);
+        calcLabel = new JLabel("Substitute: A = 1/2 × " + base + " × " + height + " = " + correctArea, SwingConstants.CENTER);
         calcLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(formulaLabel);
@@ -82,10 +67,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
         explainPanel.setVisible(false);
         centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(explainPanel);
-
         add(centerPanel, BorderLayout.CENTER);
-
-        // 底部按钮
         nextButton = new JButton("Next Shape");
         nextButton.setEnabled(false);
         homeButton = new JButton("Home");
@@ -93,17 +75,12 @@ public class RectangleAreaQuestionPanel extends JPanel {
         bottomPanel.add(nextButton);
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
-
-        // 事件绑定
         submitButton.addActionListener(e -> checkAnswer());
         nextButton.addActionListener(e -> goNext());
         homeButton.addActionListener(e -> goHome());
-
-        // 启动倒计时
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
     }
-
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -112,7 +89,6 @@ public class RectangleAreaQuestionPanel extends JPanel {
             showSolution(false, true);
         }
     }
-
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -135,7 +111,6 @@ public class RectangleAreaQuestionPanel extends JPanel {
             }
         }
     }
-
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
@@ -149,24 +124,20 @@ public class RectangleAreaQuestionPanel extends JPanel {
             feedbackLabel.setText("Incorrect! The correct area is: " + correctArea);
         }
     }
-
     private void goNext() {
         parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
         parentFrame.revalidate();
     }
-
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
-
-    // 内部类：绘制带标注的矩形
-    static class RectangleDrawingPanel extends JPanel {
-        private int length, width;
-        public RectangleDrawingPanel(int l, int w) {
-            this.length = l;
-            this.width = w;
-            setPreferredSize(new Dimension(320, 160)); // 适当加大高度
+    static class TriangleDrawingPanel extends JPanel {
+        private int base, height;
+        public TriangleDrawingPanel(int b, int h) {
+            this.base = b;
+            this.height = h;
+            setPreferredSize(new Dimension(320, 160));
         }
         @Override
         protected void paintComponent(Graphics g) {
@@ -175,27 +146,28 @@ public class RectangleAreaQuestionPanel extends JPanel {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             int panelW = getWidth();
             int panelH = getHeight();
-            int maxRectW = 180, maxRectH = 80;
-            // 按比例缩放
-            double scale = Math.min(maxRectW / (double)length, maxRectH / (double)width);
-            int rectW = (int)(length * scale);
-            int rectH = (int)(width * scale);
-            int x = (panelW - rectW) / 2;
-            int y = (panelH - rectH) / 2;
+            int maxBase = 180, maxHeight = 80;
+            double scale = Math.min(maxBase / (double)base, maxHeight / (double)height);
+            int b = (int)(base * scale);
+            int h = (int)(height * scale);
+            int x = (panelW - b) / 2;
+            int y = (panelH - h) / 2 + h;
+            Polygon p = new Polygon();
+            p.addPoint(x, y);
+            p.addPoint(x + b, y);
+            p.addPoint(x + b / 2, y - h);
             g2.setStroke(new BasicStroke(3));
-            g2.setColor(new Color(100, 180, 255));
-            g2.drawRect(x, y, rectW, rectH);
+            g2.setColor(new Color(120, 200, 255));
+            g2.drawPolygon(p);
             g2.setFont(new Font("Arial", Font.BOLD, 16));
             g2.setColor(Color.BLACK);
             FontMetrics fm = g2.getFontMetrics();
-            // Length 居中下方
-            String lengthStr = "Length: " + length;
-            int lengthWidth = fm.stringWidth(lengthStr);
-            g2.drawString(lengthStr, x + (rectW - lengthWidth) / 2, y + rectH + 25);
-            // Width 居中右侧
-            String widthStr = "Width: " + width;
-            int widthHeight = fm.getHeight();
-            g2.drawString(widthStr, x + rectW + 10, y + rectH / 2 + widthHeight / 2);
+            String baseStr = "Base: " + base;
+            int baseWidth = fm.stringWidth(baseStr);
+            g2.drawString(baseStr, x + (b - baseWidth) / 2, y + 25);
+            String heightStr = "Height: " + height;
+            int heightWidth = fm.stringWidth(heightStr);
+            g2.drawString(heightStr, x + b + 10, y - h / 2 + heightWidth / 2);
         }
     }
 } 

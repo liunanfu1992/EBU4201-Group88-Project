@@ -36,6 +36,21 @@ public class ShapeAreaPanel extends JPanel {
             parentFrame.setContentPane(new RectangleAreaQuestionPanel(parentFrame));
             parentFrame.revalidate();
         });
+        // Parallelogram按钮事件
+        paraBtn.addActionListener(e -> {
+            parentFrame.setContentPane(new ParallelogramAreaQuestionPanel(parentFrame));
+            parentFrame.revalidate();
+        });
+        // Triangle按钮事件
+        triBtn.addActionListener(e -> {
+            parentFrame.setContentPane(new TriangleAreaQuestionPanel(parentFrame));
+            parentFrame.revalidate();
+        });
+        // Trapezium按钮事件
+        trapBtn.addActionListener(e -> {
+            parentFrame.setContentPane(new TrapeziumAreaQuestionPanel(parentFrame));
+            parentFrame.revalidate();
+        });
         shapeSelectPanel.add(rectBtn);
         shapeSelectPanel.add(paraBtn);
         shapeSelectPanel.add(triBtn);
