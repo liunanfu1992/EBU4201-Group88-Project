@@ -60,5 +60,13 @@ public class MainMenuPanel extends JPanel {
                 // Already at home menu, do nothing
             }
         });
+
+        ks1Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parentFrame.setContentPane(new ShapeIdentificationPanel(parentFrame, true)); // 2D模式
+                parentFrame.revalidate();
+            }
+        });
     }
 } 
