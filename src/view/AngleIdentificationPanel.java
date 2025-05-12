@@ -30,6 +30,9 @@ public class AngleIdentificationPanel extends JPanel {
     private int currentAngleValue = -1;
     private AngleType currentAngleType;
     private int typeAttempts = 0;
+    private boolean showAnglePrompt = false;
+    private JLabel identifyLabel;
+    private JLabel tipLabel;
 
     public AngleIdentificationPanel(JFrame frame) {
         this.parentFrame = frame;
@@ -70,21 +73,35 @@ public class AngleIdentificationPanel extends JPanel {
         angleDrawingPanel = new AngleDrawingPanel();
         angleDrawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         angleDrawingPanel.setPreferredSize(new Dimension(260, 200));
+        angleDrawingPanel.setAngle(-1); // 初始不显示角度图
         centerPanel.add(angleDrawingPanel);
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(Box.createVerticalStrut(20)); // 增加图片和文字间距
+        
+        // 初始化并添加angleLabel，防止NullPointerException
         angleLabel = new JLabel("", SwingConstants.CENTER);
-        angleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        angleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         angleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(angleLabel);
-        JLabel tipLabel = new JLabel("Look at the angle and type its name below.", SwingConstants.CENTER);
+        identifyLabel = new JLabel("", SwingConstants.CENTER);
+        identifyLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        identifyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(identifyLabel);
+        tipLabel = new JLabel("", SwingConstants.CENTER);
         tipLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         tipLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(tipLabel);
+        centerPanel.add(Box.createVerticalStrut(30));
 
         answerField = new JTextField();
+        answerField.setMaximumSize(new Dimension(400, 40));
+        answerField.setPreferredSize(new Dimension(400, 40));
+        answerField.setFont(new Font("Arial", Font.PLAIN, 18));
+        answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(answerField);
 
         submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(submitButton);
 
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
@@ -122,6 +139,8 @@ public class AngleIdentificationPanel extends JPanel {
         });
 
         loadNextQuestion();
+        angleDrawingPanel.setAngle(-1); // 每次重置时不显示角度图
+        updateAnglePrompt();
     }
 
     private int getRandomAngleForType(AngleType type, Random rand) {
@@ -161,6 +180,7 @@ public class AngleIdentificationPanel extends JPanel {
     private void handleAngleInput() {
         String input = angleInputField.getText().trim();
         int angleValue = -1;
+        showAnglePrompt = false;
         try {
             angleValue = Integer.parseInt(input);
         } catch (Exception e) {
@@ -168,6 +188,7 @@ public class AngleIdentificationPanel extends JPanel {
             currentAngleValue = -1;
             angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
+            updateAnglePrompt();
             return;
         }
         if (angleValue < 0 || angleValue > 360 || angleValue % 10 != 0) {
@@ -175,15 +196,28 @@ public class AngleIdentificationPanel extends JPanel {
             currentAngleValue = -1;
             angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
+            updateAnglePrompt();
             return;
         }
         currentAngleValue = angleValue;
         currentAngleType = getAngleType(angleValue);
         angleDrawingPanel.setAngle(angleValue);
-        angleLabel.setText("Identify the type of angle: " + angleValue + "°");
+        angleLabel.setText("");
+        showAnglePrompt = true;
+        updateAnglePrompt();
         answerField.setText("");
         feedbackLabel.setText(" ");
         typeAttempts = 0;
+    }
+
+    private void updateAnglePrompt() {
+        if (showAnglePrompt && currentAngleValue >= 0) {
+            identifyLabel.setText("Identify the type of angle: " + currentAngleValue + "°");
+            tipLabel.setText("Look at the angle and type its name below.");
+        } else {
+            identifyLabel.setText("");
+            tipLabel.setText("");
+        }
     }
 
     private AngleType getAngleType(int angle) {
@@ -200,6 +234,8 @@ public class AngleIdentificationPanel extends JPanel {
             feedbackLabel.setText("Please enter and draw an angle first.");
             angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
+            showAnglePrompt = false;
+            updateAnglePrompt();
             return;
         }
         String userAnswer = answerField.getText().trim().toLowerCase();
@@ -210,12 +246,16 @@ public class AngleIdentificationPanel extends JPanel {
             currentAngleValue = -1;
             angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
+            showAnglePrompt = false;
+            updateAnglePrompt();
         } else {
             if (typeAttempts >= 3) {
                 feedbackLabel.setText("Incorrect! The correct answer is: " + correctType + ".");
                 currentAngleValue = -1;
                 angleDrawingPanel.setAngle(-1);
                 angleLabel.setText("");
+                showAnglePrompt = false;
+                updateAnglePrompt();
             } else {
                 feedbackLabel.setText("Try again! Attempts left: " + (3 - typeAttempts));
             }
@@ -241,7 +281,7 @@ class AngleDrawingPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int cx = getWidth() / 2;
-        int cy = getHeight() - 20;
+        int cy = getHeight() - 70;
         int r = 70;
         // 主射线（0°，水平向右）
         g2.setStroke(new BasicStroke(4));
@@ -257,15 +297,14 @@ class AngleDrawingPanel extends JPanel {
         g2.fillOval(cx - 5, cy - 5, 10, 10);
         g2.fillOval(cx + r - 5, cy - 5, 10, 10);
         g2.fillOval(x2 - 5, y2 - 5, 10, 10);
-        // 角弧（始终画最小夹角）
-        int arcAngle = angle > 180 ? 360 - angle : angle;
+        // 角弧（始终画angle度）
         g2.setColor(angle > 180 ? new Color(255, 140, 0) : new Color(255, 99, 71));
         g2.setStroke(new BasicStroke(3));
         int arcStart = 0;
-        int arcExtent = arcAngle;
+        int arcExtent = angle;
         g2.drawArc(cx - r/2, cy - r/2, r, r, arcStart, arcExtent);
-        // 角度数值（始终显示用户输入的实际角度）
-        double midAngle = arcAngle / 2.0;
+        // 角度数值
+        double midAngle = angle / 2.0;
         int tx = cx + (int)((r/2 + 22) * Math.cos(Math.toRadians(midAngle)));
         int ty = cy - (int)((r/2 + 22) * Math.sin(Math.toRadians(midAngle)));
         g2.setColor(new Color(30, 30, 30));
