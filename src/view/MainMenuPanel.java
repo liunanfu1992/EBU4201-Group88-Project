@@ -24,10 +24,14 @@ public class MainMenuPanel extends JPanel {
         JPanel levelPanel = new JPanel();
         levelPanel.setLayout(new GridLayout(3, 1, 10, 10));
         levelPanel.setBorder(BorderFactory.createTitledBorder("Select a Level"));
-        JButton ks1Button = new JButton("KS1 - Shape & Angle Identification");
+        JButton ks1_2dButton = new JButton("KS1 - 2D Shape Identification");
+        JButton ks1_3dButton = new JButton("KS1 - 3D Shape Identification");
+        JButton ks1_angleButton = new JButton("KS1 - Angle Identification");
         JButton ks2Button = new JButton("KS2 - Area & Circle Calculation");
         JButton bonusButton = new JButton("Bonus - Advanced Challenges");
-        levelPanel.add(ks1Button);
+        levelPanel.add(ks1_2dButton);
+        levelPanel.add(ks1_3dButton);
+        levelPanel.add(ks1_angleButton);
         levelPanel.add(ks2Button);
         levelPanel.add(bonusButton);
         add(levelPanel, BorderLayout.CENTER);
@@ -61,10 +65,38 @@ public class MainMenuPanel extends JPanel {
             }
         });
 
-        ks1Button.addActionListener(new ActionListener() {
+        ks1_2dButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 parentFrame.setContentPane(new ShapeIdentificationPanel(parentFrame, true)); // 2D模式
+                parentFrame.revalidate();
+            }
+        });
+        ks1_3dButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parentFrame.setContentPane(new ShapeIdentificationPanel(parentFrame, false)); // 3D模式
+                parentFrame.revalidate();
+            }
+        });
+        ks1_angleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parentFrame.setContentPane(new AngleIdentificationPanel(parentFrame));
+                parentFrame.revalidate();
+            }
+        });
+        ks2Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parentFrame.setContentPane(new AreaCalculationPanel(parentFrame));
+                parentFrame.revalidate();
+            }
+        });
+        bonusButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parentFrame.setContentPane(new CompoundShapePanel(parentFrame));
                 parentFrame.revalidate();
             }
         });

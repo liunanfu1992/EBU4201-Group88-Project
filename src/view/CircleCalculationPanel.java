@@ -1,25 +1,18 @@
 package src.view;
 
-import src.model.ShapeType;
-import src.model.ShapeQuestion;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Random;
 
-public class ShapeIdentificationPanel extends JPanel {
+public class CircleCalculationPanel extends JPanel {
     private JFrame parentFrame;
-    private List<ShapeType> shapesToIdentify;
     private int currentIndex = 0;
-    private ShapeQuestion currentQuestion;
     private int attempts = 0;
     private int score = 0;
-    private boolean is2DMode;
 
-    private JLabel shapeLabel;
+    private JLabel questionLabel;
     private JTextField answerField;
     private JButton submitButton;
     private JButton homeButton;
@@ -27,60 +20,52 @@ public class ShapeIdentificationPanel extends JPanel {
     private JLabel scoreLabel;
     private JLabel imageLabel;
 
-    public ShapeIdentificationPanel(JFrame frame, boolean is2D) {
+    // 当前题目参数
+    private double radius;
+    private boolean isAreaQuestion;
+    private double correctAnswer;
+    private String formula;
+
+    public CircleCalculationPanel(JFrame frame) {
         this.parentFrame = frame;
-        this.is2DMode = is2D;
         setLayout(new BorderLayout(10, 10));
 
-        // Select 2D or 3D shapes
-        shapesToIdentify = new ArrayList<>();
-        for (ShapeType type : ShapeType.values()) {
-            if (is2D && type.ordinal() <= ShapeType.KITE.ordinal()) {
-                shapesToIdentify.add(type);
-            } else if (!is2D && type.ordinal() > ShapeType.KITE.ordinal()) {
-                shapesToIdentify.add(type);
-            }
-        }
-        Collections.shuffle(shapesToIdentify);
-
-        // Top score label
+        // 顶部分数
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(scoreLabel, BorderLayout.NORTH);
 
-        // Center question panel
+        // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         imageLabel = new JLabel("", SwingConstants.CENTER);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0)); // 上下留白
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         centerPanel.add(imageLabel);
-        shapeLabel = new JLabel("", SwingConstants.CENTER);
-        shapeLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        shapeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(shapeLabel);
+        questionLabel = new JLabel("", SwingConstants.CENTER);
+        questionLabel.setFont(new Font("Arial", Font.BOLD, 22));
+        questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(questionLabel);
+
         answerField = new JTextField();
-        answerField.setMaximumSize(new Dimension(400, 40));
-        answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(answerField);
+
         submitButton = new JButton("Submit");
-        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(submitButton);
+
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(feedbackLabel);
+
         add(centerPanel, BorderLayout.CENTER);
 
-        // Bottom Home button
+        // 底部Home按钮
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Event bindings
+        // 事件绑定
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -94,30 +79,42 @@ public class ShapeIdentificationPanel extends JPanel {
             }
         });
 
-        loadNextShape();
+        loadNextQuestion();
     }
 
-    private void loadNextShape() {
-        if (currentIndex >= shapesToIdentify.size()) {
-            feedbackLabel.setText("All shapes identified! Your final score: " + score);
+    private void loadNextQuestion() {
+        if (currentIndex >= 6) { // 3 area + 3 circumference
+            feedbackLabel.setText("All circle questions completed! Your final score: " + score);
             submitButton.setEnabled(false);
             answerField.setEnabled(false);
             imageLabel.setIcon(null);
-            shapeLabel.setText("");
+            questionLabel.setText("");
             return;
         }
-        ShapeType shape = shapesToIdentify.get(currentIndex);
-        currentQuestion = new ShapeQuestion(shape);
-        // 根据模式选择2D或3D图片目录
-        String folder = is2DMode ? "2DShapes" : "3DShapes";
-        String imageName = shape.name().charAt(0) + shape.name().substring(1).toLowerCase() + ".png";
-        String absPath = "src/resources/images/task1/" + folder + "/" + imageName;
+        Random rand = new Random();
+        radius = rand.nextInt(16) + 5; // 5-20
+        isAreaQuestion = (currentIndex % 2 == 0);
+        if (isAreaQuestion) {
+            correctAnswer = Math.PI * radius * radius;
+            formula = "Area = π × r²";
+            questionLabel.setText("Circle: radius = " + radius + ". What is the area? (Use π ≈ 3.14)");
+        } else {
+            correctAnswer = 2 * Math.PI * radius;
+            formula = "Circumference = 2 × π × r";
+            questionLabel.setText("Circle: radius = " + radius + ". What is the circumference? (Use π ≈ 3.14)");
+        }
+        answerField.setText("");
+        feedbackLabel.setText(" ");
+        attempts = 0;
+
+        // 加载圆图片
+        String absPath = "src/resources/images/task4/Circle.png";
         ImageIcon icon = null;
         try {
             ImageIcon rawIcon = new ImageIcon(absPath);
             int imgWidth = rawIcon.getIconWidth();
             int imgHeight = rawIcon.getIconHeight();
-            int maxDim = 300;
+            int maxDim = 180;
             int newWidth = imgWidth, newHeight = imgHeight;
             if (imgWidth > maxDim || imgHeight > maxDim) {
                 double scale = Math.min((double)maxDim / imgWidth, (double)maxDim / imgHeight);
@@ -128,35 +125,38 @@ public class ShapeIdentificationPanel extends JPanel {
             icon = new ImageIcon(scaledImg);
             imageLabel.setText("");
         } catch (Exception e) {
-            imageLabel.setText("[Error loading image]");
+            imageLabel.setText("[No image for circle]");
         }
         imageLabel.setIcon(icon);
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        shapeLabel.setText(""); // 不显示英文名
-        answerField.setText("");
-        feedbackLabel.setText(" ");
-        attempts = 0;
     }
 
     private void handleSubmit() {
         String userAnswer = answerField.getText();
         attempts++;
-        if (currentQuestion.checkAnswer(userAnswer)) {
+        boolean correct = false;
+        try {
+            double ans = Double.parseDouble(userAnswer);
+            correct = Math.abs(ans - correctAnswer) < 0.05 * correctAnswer; // 5% 容差
+        } catch (Exception e) {
+            // ignore parse error
+        }
+        if (correct) {
             int points = 4 - attempts; // 1st:3, 2nd:2, 3rd:1
             if (points < 1) points = 1;
             score += points;
             scoreLabel.setText("Score: " + score);
-            feedbackLabel.setText("Correct! +" + points + " point(s). Great job!");
+            feedbackLabel.setText("Correct! +" + points + " point(s). Well done!");
             currentIndex++;
-            Timer timer = new Timer(1200, e -> loadNextShape());
+            Timer timer = new Timer(1200, e -> loadNextQuestion());
             timer.setRepeats(false);
             timer.start();
         } else {
             if (attempts >= 3) {
-                feedbackLabel.setText("Incorrect! The correct answer is: " + currentQuestion.getCorrectAnswer());
+                feedbackLabel.setText("Incorrect! The correct answer is: " + String.format("%.2f", correctAnswer) + " (" + formula + ")");
                 currentIndex++;
-                Timer timer = new Timer(1800, e -> loadNextShape());
+                Timer timer = new Timer(2200, e -> loadNextQuestion());
                 timer.setRepeats(false);
                 timer.start();
             } else {
