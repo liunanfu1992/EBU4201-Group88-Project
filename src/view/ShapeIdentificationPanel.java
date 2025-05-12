@@ -98,45 +98,47 @@ public class ShapeIdentificationPanel extends JPanel {
     }
 
     private void loadNextShape() {
-        if (currentIndex >= shapesToIdentify.size()) {
-            feedbackLabel.setText("All shapes identified! Your final score: " + score);
-            submitButton.setEnabled(false);
-            answerField.setEnabled(false);
-            imageLabel.setIcon(null);
-            shapeLabel.setText("");
-            return;
-        }
-        ShapeType shape = shapesToIdentify.get(currentIndex);
-        currentQuestion = new ShapeQuestion(shape);
-        // 根据模式选择2D或3D图片目录
-        String folder = is2DMode ? "2DShapes" : "3DShapes";
-        String imageName = shape.name().charAt(0) + shape.name().substring(1).toLowerCase() + ".png";
-        String absPath = "src/resources/images/task1/" + folder + "/" + imageName;
-        ImageIcon icon = null;
-        try {
-            ImageIcon rawIcon = new ImageIcon(absPath);
-            int imgWidth = rawIcon.getIconWidth();
-            int imgHeight = rawIcon.getIconHeight();
-            int maxDim = 300;
-            int newWidth = imgWidth, newHeight = imgHeight;
-            if (imgWidth > maxDim || imgHeight > maxDim) {
-                double scale = Math.min((double)maxDim / imgWidth, (double)maxDim / imgHeight);
-                newWidth = (int)(imgWidth * scale);
-                newHeight = (int)(imgHeight * scale);
+        if (currentIndex < shapesToIdentify.size()) {
+            ShapeType currentShape = shapesToIdentify.get(currentIndex);
+            currentQuestion = new ShapeQuestion(currentShape);
+            
+            // 优化图片名生成逻辑：下划线转空格，单词首字母大写
+            String rawName = currentShape.name().toLowerCase().replace("_", " ");
+            String[] words = rawName.split(" ");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < words.length; i++) {
+                sb.append(Character.toUpperCase(words[i].charAt(0)))
+                  .append(words[i].substring(1));
+                if (i < words.length - 1) sb.append(" ");
             }
-            Image scaledImg = rawIcon.getImage().getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-            icon = new ImageIcon(scaledImg);
-            imageLabel.setText("");
-        } catch (Exception e) {
-            imageLabel.setText("[Error loading image]");
+            String imageName = sb.toString();
+            String filePath = "src/resources/images/task1/" + (is2DMode ? "2DShapes/" : "3DShapes/") + imageName + ".png";
+            try {
+                ImageIcon icon = new ImageIcon(filePath); // 直接用本地文件路径
+                if (icon.getIconWidth() == -1) {
+                    imageLabel.setText("Image not found: " + imageName);
+                    imageLabel.setIcon(null);
+                } else {
+                    Image image = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    imageLabel.setIcon(new ImageIcon(image));
+                    imageLabel.setText("");
+                }
+            } catch (Exception e) {
+                imageLabel.setText("Error loading image: " + imageName);
+                imageLabel.setIcon(null);
+            }
+            
+            shapeLabel.setText("What shape is this?");
+            answerField.setText("");
+            feedbackLabel.setText(" ");
+            attempts = 0;
+        } else {
+            imageLabel.setIcon(null);
+            shapeLabel.setText("Congratulations! You've completed all shapes!");
+            answerField.setVisible(false);
+            submitButton.setVisible(false);
+            feedbackLabel.setText("Final Score: " + score + "/" + shapesToIdentify.size());
         }
-        imageLabel.setIcon(icon);
-        imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        imageLabel.setVerticalAlignment(SwingConstants.CENTER);
-        shapeLabel.setText(""); // 不显示英文名
-        answerField.setText("");
-        feedbackLabel.setText(" ");
-        attempts = 0;
     }
 
     private void handleSubmit() {
@@ -154,7 +156,9 @@ public class ShapeIdentificationPanel extends JPanel {
             timer.start();
         } else {
             if (attempts >= 3) {
-                feedbackLabel.setText("Incorrect! The correct answer is: " + currentQuestion.getCorrectAnswer());
+                // 正确答案下划线替换为空格
+                String correct = currentQuestion.getCorrectAnswer().replace("_", " ");
+                feedbackLabel.setText("Incorrect! The correct answer is: " + correct);
                 currentIndex++;
                 Timer timer = new Timer(1800, e -> loadNextShape());
                 timer.setRepeats(false);
