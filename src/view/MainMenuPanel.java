@@ -89,7 +89,7 @@ public class MainMenuPanel extends JPanel {
         ks2Button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parentFrame.setContentPane(new AreaCalculationPanel(parentFrame));
+                parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
                 parentFrame.revalidate();
             }
         });
