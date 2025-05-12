@@ -97,6 +97,7 @@ public class AngleIdentificationPanel extends JPanel {
         answerField.setPreferredSize(new Dimension(400, 40));
         answerField.setFont(new Font("Arial", Font.PLAIN, 18));
         answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        answerField.setHorizontalAlignment(JTextField.CENTER);
         centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(answerField);
 
@@ -106,6 +107,8 @@ public class AngleIdentificationPanel extends JPanel {
 
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
         centerPanel.add(feedbackLabel);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -138,7 +141,6 @@ public class AngleIdentificationPanel extends JPanel {
             }
         });
 
-        loadNextQuestion();
         angleDrawingPanel.setAngle(-1); // 每次重置时不显示角度图
         updateAnglePrompt();
     }
