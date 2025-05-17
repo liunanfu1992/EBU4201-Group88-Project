@@ -4,79 +4,80 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 
-public class CompoundShapePanel extends JPanel {
+public class SectorAreaPanel extends JPanel {
     private JFrame parentFrame;
-    private int shapeIndex;
+    private int sectorIndex;
     private boolean[] completed;
     private int attempts = 0;
-    private int score = 0;
     private JLabel timerLabel;
     private Timer timer;
     private int timeLeft = 300;
-
     private JLabel questionLabel;
     private JTextField answerField;
     private JButton submitButton;
     private JButton homeButton;
     private JLabel feedbackLabel;
-    private JLabel scoreLabel;
     private JLabel imageLabel;
 
-    // 当前题目参数
-    private double[] params;
+    // 题目数据
     private double correctAnswer;
-    private String formula;
     private String breakdown;
 
-    public CompoundShapePanel(JFrame frame, int shapeIndex, boolean[] completed) {
+    public SectorAreaPanel(JFrame frame, int sectorIndex, boolean[] completed) {
         this.parentFrame = frame;
-        this.shapeIndex = shapeIndex;
+        this.sectorIndex = sectorIndex;
         this.completed = completed;
         setLayout(new BorderLayout(10, 10));
         timerLabel = new JLabel("Time left: 300s", SwingConstants.CENTER);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(timerLabel, BorderLayout.NORTH);
 
-        // 顶部分数
-        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(scoreLabel, BorderLayout.NORTH);
-
-        // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         imageLabel = new JLabel("", SwingConstants.CENTER);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imageLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         centerPanel.add(imageLabel);
+        centerPanel.add(Box.createVerticalStrut(10));
         questionLabel = new JLabel("", SwingConstants.CENTER);
         questionLabel.setFont(new Font("Arial", Font.BOLD, 20));
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
-
+        centerPanel.add(Box.createVerticalStrut(10));
         answerField = new JTextField();
+        answerField.setMaximumSize(new Dimension(120, 32));
+        answerField.setPreferredSize(new Dimension(120, 32));
+        answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(answerField);
-
+        centerPanel.add(Box.createVerticalStrut(10));
         submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(submitButton);
-
+        centerPanel.add(Box.createVerticalStrut(10));
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         centerPanel.add(feedbackLabel);
-
+        centerPanel.add(Box.createVerticalStrut(10));
+        JLabel answerImageLabel = new JLabel("");
+        answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(answerImageLabel);
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部Home按钮
         homeButton = new JButton("Home");
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(homeButton);
         JButton backButton = new JButton("Back to Selection");
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(homeButton);
+        bottomPanel.add(Box.createHorizontalStrut(20));
         bottomPanel.add(backButton);
+        bottomPanel.add(Box.createHorizontalGlue());
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,7 +97,7 @@ public class CompoundShapePanel extends JPanel {
             }
         });
 
-        loadQuestionByIndex(shapeIndex);
+        loadQuestionByIndex(sectorIndex);
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
     }
@@ -111,48 +112,37 @@ public class CompoundShapePanel extends JPanel {
     }
 
     private void loadQuestionByIndex(int idx) {
-        // 这里只实现1,2,3,4,7,8,9，5/6提示未开放
-        if (idx == 4 || idx == 5) {
-            questionLabel.setText("This shape is not available yet.");
-            submitButton.setEnabled(false);
-            answerField.setEnabled(false);
-            return;
-        }
-        // 题目数据示例（实际应补全所有题目数据）
+        // 题目数据（示例，实际应补全所有题目数据）
         String[] imgPaths = {
-            "src/resources/images/task5/Shape 1.jpg",
-            "src/resources/images/task5/Shape 2.jpg",
-            "src/resources/images/task5/Shape 3.jpg",
-            "src/resources/images/task5/Shape 4.jpg",
-            "src/resources/images/task5/Shape 5.jpg",
-            "src/resources/images/task5/Shape 6.jpg",
-            "src/resources/images/task5/Shape 7.jpg",
-            "src/resources/images/task5/Shape 8.jpg",
-            "src/resources/images/task5/Shape 9.jpg"
+            "src/resources/images/task6/Shape 1.jpg",
+            "src/resources/images/task6/Shape 2.jpg",
+            "src/resources/images/task6/Shape 3.jpg",
+            "src/resources/images/task6/Shape 4.jpg",
+            "src/resources/images/task6/Shape 5.jpg",
+            "src/resources/images/task6/Shape 6.jpg",
+            "src/resources/images/task6/Shape 7.jpg",
+            "src/resources/images/task6/Shape 8.jpg"
         };
         String[] questions = {
-            "Calculate the area of this compound shape (split as shown).",
-            "Calculate the area of this compound shape (split as shown).",
-            "Calculate the area of this compound shape (split as shown).",
-            "Calculate the area of this compound shape (split as shown).",
-            "Not available yet.",
-            "Not available yet.",
-            "Calculate the area of this compound shape (split as shown).",
-            "Calculate the area of this compound shape (split as shown).",
-            "Calculate the area of this compound shape (split as shown)."
+            "Sector: radius = 8 cm, angle = 90°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 18 ft, angle = 130°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 19 cm, angle = 240°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 22 ft, angle = 110°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 3.5 in, angle = 100°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 8 in, angle = 270°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 12 yd, angle = 280°. What is the area? (Use π ≈ 3.14)",
+            "Sector: radius = 15 mm, angle = 250°. What is the area? (Use π ≈ 3.14)"
         };
-        double[] answers = {196, 410, 576, 288, 0, 0, 226, 5184, 144}; // 示例答案
-        String[] breakdowns = {
-            "Area = 14×8 + 0.5×8×8 = 112 + 32 = 144 cm²",
-            "Area = 11×21 + 10×10 = 231 + 100 = 331 cm²",
-            "Area = 18×19 + 16×16 = 342 + 256 = 598 cm²",
-            "Area = 12×12 + 10×6 = 144 + 60 = 204 cm²",
-            "Not available yet.",
-            "Not available yet.",
-            "Area = 0.5×12×16 + 14×5 = 96 + 70 = 166 cm²",
-            "Area = 36×36 + 36×60 = 1296 + 2160 = 3456 m²",
-            "Area = 10×11 + 8×8 = 110 + 64 = 174 m²"
-        };
+        double[] radii = {8, 18, 19, 22, 3.5, 8, 12, 15};
+        double[] angles = {90, 130, 240, 110, 100, 270, 280, 250};
+        String[] units = {"cm", "ft", "cm", "ft", "in", "in", "yd", "mm"};
+        // 计算正确答案
+        double[] answers = new double[8];
+        String[] breakdowns = new String[8];
+        for (int i = 0; i < 8; i++) {
+            answers[i] = angles[i] / 360.0 * 3.14 * radii[i] * radii[i];
+            breakdowns[i] = String.format("Area = (%.0f/360) × π × %.2f² = (%.0f/360) × 3.14 × %.2f × %.2f = %.2f %s²", angles[i], radii[i], angles[i], radii[i], radii[i], answers[i], units[i]);
+        }
         ImageIcon icon = new ImageIcon(imgPaths[idx]);
         Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(img));
@@ -178,12 +168,8 @@ public class CompoundShapePanel extends JPanel {
         }
         if (correct) {
             timer.stop();
-            completed[shapeIndex] = true;
-            int points = 4 - attempts; // 1st:3, 2nd:2, 3rd:1
-            if (points < 1) points = 1;
-            score += points;
-            scoreLabel.setText("Score: " + score);
-            feedbackLabel.setText("Correct! +" + points + " point(s). Well done!");
+            completed[sectorIndex] = true;
+            feedbackLabel.setText("Correct! Well done!");
             Timer t = new Timer(1200, e -> goBackToSelection());
             t.setRepeats(false);
             t.start();
@@ -200,22 +186,30 @@ public class CompoundShapePanel extends JPanel {
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
-        String msg;
-        if (correct) {
-            msg = "Correct! Area = " + correctAnswer;
-        } else if (timeout) {
-            msg = "Time's up! The correct area is: " + correctAnswer + ". " + breakdown;
-        } else {
-            msg = "Incorrect! The correct area is: " + correctAnswer + ". " + breakdown;
+        // 保留题目原图，在下方展示答案图片
+        String answerImgPath = String.format("src/resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
+        ImageIcon answerIcon = new ImageIcon(answerImgPath);
+        Image answerImg = answerIcon.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
+        // 找到centerPanel中的answerImageLabel
+        JPanel centerPanel = (JPanel) imageLabel.getParent();
+        JLabel answerImageLabel = null;
+        for (Component comp : centerPanel.getComponents()) {
+            if (comp instanceof JLabel && comp != imageLabel && comp != feedbackLabel) {
+                answerImageLabel = (JLabel) comp;
+            }
         }
-        feedbackLabel.setText("<html>" + msg + "</html>");
+        if (answerImageLabel != null) {
+            answerImageLabel.setIcon(new ImageIcon(answerImg));
+            answerImageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+        }
+        feedbackLabel.setText("");
         Timer t = new Timer(3200, e -> goBackToSelection());
         t.setRepeats(false);
         t.start();
     }
 
     private void goBackToSelection() {
-        parentFrame.setContentPane(new CompoundShapeSelectionPanel(parentFrame, completed));
+        parentFrame.setContentPane(new SectorSelectionPanel(parentFrame, completed));
         parentFrame.revalidate();
     }
 

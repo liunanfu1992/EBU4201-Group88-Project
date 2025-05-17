@@ -52,10 +52,10 @@ public class MainMenuPanel extends JPanel {
         bonusPanel.setBorder(BorderFactory.createTitledBorder("Bonus"));
         JButton btnBonus1 = new JButton("Compound Shape Challenge");
         btnBonus1.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnBonus1.setEnabled(false); // 预留
-        JButton btnBonus2 = new JButton("Sector Challenge");
+        btnBonus1.setEnabled(true);
+        JButton btnBonus2 = new JButton("Sector Area Challenge");
         btnBonus2.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnBonus2.setEnabled(false); // 预留
+        btnBonus2.setEnabled(true);
         bonusPanel.add(Box.createVerticalStrut(20));
         bonusPanel.add(btnBonus1);
         bonusPanel.add(Box.createVerticalStrut(20));
@@ -89,6 +89,14 @@ public class MainMenuPanel extends JPanel {
         });
         btnCircle.addActionListener(e -> {
             parentFrame.setContentPane(new CircleCalculationPanel(parentFrame));
+            parentFrame.revalidate();
+        });
+        btnBonus1.addActionListener(e -> {
+            parentFrame.setContentPane(new CompoundShapeSelectionPanel(parentFrame, null));
+            parentFrame.revalidate();
+        });
+        btnBonus2.addActionListener(e -> {
+            parentFrame.setContentPane(new SectorSelectionPanel(parentFrame, null));
             parentFrame.revalidate();
         });
 
