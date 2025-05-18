@@ -57,10 +57,17 @@ public class CompoundShapePanel extends JPanel {
         centerPanel.add(questionLabel);
 
         answerField = new JTextField();
+        answerField.setMaximumSize(new Dimension(120, 32));
+        answerField.setPreferredSize(new Dimension(120, 32));
+        answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(answerField);
 
         submitButton = new JButton("Submit");
         centerPanel.add(submitButton);
+        centerPanel.add(Box.createVerticalStrut(10));
+        JLabel answerImageLabel = new JLabel("");
+        answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(answerImageLabel);
 
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -70,10 +77,15 @@ public class CompoundShapePanel extends JPanel {
 
         // 底部Home按钮
         homeButton = new JButton("Home");
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.add(homeButton);
         JButton backButton = new JButton("Back to Selection");
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
+        bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(homeButton);
+        bottomPanel.add(Box.createHorizontalStrut(20));
         bottomPanel.add(backButton);
+        bottomPanel.add(Box.createHorizontalGlue());
         add(bottomPanel, BorderLayout.SOUTH);
 
         // 事件绑定
@@ -172,21 +184,17 @@ public class CompoundShapePanel extends JPanel {
         boolean correct = false;
         try {
             double ans = Double.parseDouble(userAnswer);
-            correct = Math.abs(ans - correctAnswer) < 0.05 * correctAnswer;
+            // 保留两位小数进行比较
+            double ans2 = Math.round(ans * 100.0) / 100.0;
+            double correct2 = Math.round(correctAnswer * 100.0) / 100.0;
+            correct = Math.abs(ans2 - correct2) < 0.05 * correct2;
         } catch (Exception e) {
             // ignore parse error
         }
         if (correct) {
             timer.stop();
             completed[shapeIndex] = true;
-            int points = 4 - attempts; // 1st:3, 2nd:2, 3rd:1
-            if (points < 1) points = 1;
-            score += points;
-            scoreLabel.setText("Score: " + score);
-            feedbackLabel.setText("Correct! +" + points + " point(s). Well done!");
-            Timer t = new Timer(1200, e -> goBackToSelection());
-            t.setRepeats(false);
-            t.start();
+            showSolution(true, false);
         } else {
             if (attempts >= 3) {
                 timer.stop();
@@ -200,18 +208,38 @@ public class CompoundShapePanel extends JPanel {
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
-        String msg;
-        if (correct) {
-            msg = "Correct! Area = " + correctAnswer;
-        } else if (timeout) {
-            msg = "Time's up! The correct area is: " + correctAnswer + ". " + breakdown;
-        } else {
-            msg = "Incorrect! The correct area is: " + correctAnswer + ". " + breakdown;
+        // 展示答案图片
+        String answerImgPath = String.format("src/resources/images/task5/answer/answer%d.jpg", shapeIndex + 1);
+        ImageIcon answerIcon = new ImageIcon(answerImgPath);
+        int targetWidth = 400;
+        int imgW = answerIcon.getIconWidth();
+        int imgH = answerIcon.getIconHeight();
+        int targetHeight = (int) (imgH * (targetWidth / (double) imgW));
+        Image answerImg = answerIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+        // 找到centerPanel中的answerImageLabel（submit下方的那个）
+        JPanel centerPanel = (JPanel) imageLabel.getParent();
+        JLabel answerImageLabel = null;
+        int submitIdx = -1;
+        for (int i = 0; i < centerPanel.getComponentCount(); i++) {
+            if (centerPanel.getComponent(i) == submitButton) {
+                submitIdx = i;
+            }
         }
-        feedbackLabel.setText("<html>" + msg + "</html>");
-        Timer t = new Timer(3200, e -> goBackToSelection());
-        t.setRepeats(false);
-        t.start();
+        if (submitIdx != -1 && submitIdx + 2 < centerPanel.getComponentCount()) {
+            Component comp = centerPanel.getComponent(submitIdx + 2);
+            if (comp instanceof JLabel) {
+                answerImageLabel = (JLabel) comp;
+            }
+        }
+        if (answerImageLabel != null) {
+            answerImageLabel.setIcon(new ImageIcon(answerImg));
+            answerImageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+            answerImageLabel.setVisible(true);
+        }
+        centerPanel.revalidate();
+        centerPanel.repaint();
+        feedbackLabel.setText(correct ? "Correct! Well done!" : "");
+        // 不再自动跳转，由用户点击按钮决定下一步
     }
 
     private void goBackToSelection() {

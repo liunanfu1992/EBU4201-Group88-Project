@@ -39,7 +39,7 @@ public class SectorAreaPanel extends JPanel {
         centerPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         imageLabel = new JLabel("", SwingConstants.CENTER);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 10, 0));
         centerPanel.add(imageLabel);
         centerPanel.add(Box.createVerticalStrut(10));
         questionLabel = new JLabel("", SwingConstants.CENTER);
@@ -63,6 +63,7 @@ public class SectorAreaPanel extends JPanel {
         centerPanel.add(Box.createVerticalStrut(10));
         JLabel answerImageLabel = new JLabel("");
         answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        answerImageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
         centerPanel.add(answerImageLabel);
         add(centerPanel, BorderLayout.CENTER);
 
@@ -144,7 +145,7 @@ public class SectorAreaPanel extends JPanel {
             breakdowns[i] = String.format("Area = (%.0f/360) × π × %.2f² = (%.0f/360) × 3.14 × %.2f × %.2f = %.2f %s²", angles[i], radii[i], angles[i], radii[i], radii[i], answers[i], units[i]);
         }
         ImageIcon icon = new ImageIcon(imgPaths[idx]);
-        Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        Image img = icon.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(img));
         questionLabel.setText(questions[idx]);
         correctAnswer = answers[idx];
@@ -154,6 +155,17 @@ public class SectorAreaPanel extends JPanel {
         attempts = 0;
         submitButton.setEnabled(true);
         answerField.setEnabled(true);
+        // 清空答案图片
+        JPanel centerPanel = (JPanel) imageLabel.getParent();
+        JLabel answerImageLabel = null;
+        for (Component comp : centerPanel.getComponents()) {
+            if (comp instanceof JLabel && comp != imageLabel && comp != feedbackLabel) {
+                answerImageLabel = (JLabel) comp;
+            }
+        }
+        if (answerImageLabel != null) {
+            answerImageLabel.setIcon(null);
+        }
     }
 
     private void handleSubmit() {
@@ -169,10 +181,7 @@ public class SectorAreaPanel extends JPanel {
         if (correct) {
             timer.stop();
             completed[sectorIndex] = true;
-            feedbackLabel.setText("Correct! Well done!");
-            Timer t = new Timer(1200, e -> goBackToSelection());
-            t.setRepeats(false);
-            t.start();
+            showSolution(true, false);
         } else {
             if (attempts >= 3) {
                 timer.stop();
@@ -189,8 +198,13 @@ public class SectorAreaPanel extends JPanel {
         // 保留题目原图，在下方展示答案图片
         String answerImgPath = String.format("src/resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
-        Image answerImg = answerIcon.getImage().getScaledInstance(220, 220, Image.SCALE_SMOOTH);
-        // 找到centerPanel中的answerImageLabel
+        // 按400px宽度等比缩放
+        int targetWidth = 400;
+        int imgW = answerIcon.getIconWidth();
+        int imgH = answerIcon.getIconHeight();
+        int targetHeight = (int) (imgH * (targetWidth / (double) imgW));
+        Image answerImg = answerIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+        // 找到centerPanel中的answerImageLabel（确保唯一且不被多次设置）
         JPanel centerPanel = (JPanel) imageLabel.getParent();
         JLabel answerImageLabel = null;
         for (Component comp : centerPanel.getComponents()) {
@@ -200,12 +214,14 @@ public class SectorAreaPanel extends JPanel {
         }
         if (answerImageLabel != null) {
             answerImageLabel.setIcon(new ImageIcon(answerImg));
-            answerImageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
+            answerImageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+            answerImageLabel.setVisible(true);
         }
-        feedbackLabel.setText("");
-        Timer t = new Timer(3200, e -> goBackToSelection());
-        t.setRepeats(false);
-        t.start();
+        // 强制刷新界面
+        centerPanel.revalidate();
+        centerPanel.repaint();
+        feedbackLabel.setText(correct ? "Correct! Well done!" : "");
+        // 不再自动跳转，由用户点击按钮决定下一步
     }
 
     private void goBackToSelection() {
