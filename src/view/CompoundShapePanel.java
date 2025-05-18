@@ -63,15 +63,21 @@ public class CompoundShapePanel extends JPanel {
         centerPanel.add(answerField);
 
         submitButton = new JButton("Submit");
+        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(submitButton);
         centerPanel.add(Box.createVerticalStrut(10));
+        feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
+        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel feedbackPanel = new JPanel();
+        feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.X_AXIS));
+        feedbackPanel.add(Box.createHorizontalGlue());
+        feedbackPanel.add(feedbackLabel);
+        feedbackPanel.add(Box.createHorizontalGlue());
+        centerPanel.add(feedbackPanel);
         JLabel answerImageLabel = new JLabel("");
         answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(answerImageLabel);
-
-        feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
-        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        centerPanel.add(feedbackLabel);
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -123,48 +129,38 @@ public class CompoundShapePanel extends JPanel {
     }
 
     private void loadQuestionByIndex(int idx) {
-        // 这里只实现1,2,3,4,7,8,9，5/6提示未开放
-        if (idx == 4 || idx == 5) {
-            questionLabel.setText("This shape is not available yet.");
-            submitButton.setEnabled(false);
-            answerField.setEnabled(false);
-            return;
-        }
-        // 题目数据示例（实际应补全所有题目数据）
+        // 只保留剩余6题
         String[] imgPaths = {
-            "src/resources/images/task5/Shape 1.jpg",
-            "src/resources/images/task5/Shape 2.jpg",
-            "src/resources/images/task5/Shape 3.jpg",
-            "src/resources/images/task5/Shape 4.jpg",
-            "src/resources/images/task5/Shape 5.jpg",
-            "src/resources/images/task5/Shape 6.jpg",
-            "src/resources/images/task5/Shape 7.jpg",
-            "src/resources/images/task5/Shape 8.jpg",
-            "src/resources/images/task5/Shape 9.jpg"
+            "src/resources/images/task5/Shape 2.jpg", // 原索引1
+            "src/resources/images/task5/Shape 3.jpg", // 原索引2
+            "src/resources/images/task5/Shape 4.jpg", // 原索引3
+            "src/resources/images/task5/Shape 5.jpg", // 原索引4
+            "src/resources/images/task5/Shape 8.jpg", // 原索引7
+            "src/resources/images/task5/Shape 9.jpg"  // 原索引8
         };
         String[] questions = {
             "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown).",
-            "Calculate the area of this compound shape (split as shown).",
             "Not available yet.",
-            "Not available yet.",
-            "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown)."
         };
-        double[] answers = {196, 410, 576, 288, 0, 0, 226, 5184, 144}; // 示例答案
+        double[] answers = {310, 598, 288, 18, 3456, 174};
         String[] breakdowns = {
-            "Area = 14×8 + 0.5×8×8 = 112 + 32 = 144 cm²",
             "Area = 11×21 + 10×10 = 231 + 100 = 331 cm²",
             "Area = 18×19 + 16×16 = 342 + 256 = 598 cm²",
             "Area = 12×12 + 10×6 = 144 + 60 = 204 cm²",
             "Not available yet.",
-            "Not available yet.",
-            "Area = 0.5×12×16 + 14×5 = 96 + 70 = 166 cm²",
             "Area = 36×36 + 36×60 = 1296 + 2160 = 3456 m²",
             "Area = 10×11 + 8×8 = 110 + 64 = 174 m²"
         };
+        if (idx < 0 || idx >= imgPaths.length) {
+            questionLabel.setText("This shape is not available.");
+            submitButton.setEnabled(false);
+            answerField.setEnabled(false);
+            return;
+        }
         ImageIcon icon = new ImageIcon(imgPaths[idx]);
         Image img = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(img));
@@ -209,9 +205,10 @@ public class CompoundShapePanel extends JPanel {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
         // 展示答案图片
-        String answerImgPath = String.format("src/resources/images/task5/answer/answer%d.jpg", shapeIndex + 1);
+        int[] validIdx = {1, 2, 3, 4, 7, 8};
+        String answerImgPath = String.format("src/resources/images/task5/answer/answer%d.jpg", validIdx[shapeIndex] + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
-        int targetWidth = 400;
+        int targetWidth = 320;
         int imgW = answerIcon.getIconWidth();
         int imgH = answerIcon.getIconHeight();
         int targetHeight = (int) (imgH * (targetWidth / (double) imgW));
@@ -219,14 +216,15 @@ public class CompoundShapePanel extends JPanel {
         // 找到centerPanel中的answerImageLabel（submit下方的那个）
         JPanel centerPanel = (JPanel) imageLabel.getParent();
         JLabel answerImageLabel = null;
+        // 由于插入了feedbackPanel，答案图片label索引需+3
         int submitIdx = -1;
         for (int i = 0; i < centerPanel.getComponentCount(); i++) {
             if (centerPanel.getComponent(i) == submitButton) {
                 submitIdx = i;
             }
         }
-        if (submitIdx != -1 && submitIdx + 2 < centerPanel.getComponentCount()) {
-            Component comp = centerPanel.getComponent(submitIdx + 2);
+        if (submitIdx != -1 && submitIdx + 3 < centerPanel.getComponentCount()) {
+            Component comp = centerPanel.getComponent(submitIdx + 3);
             if (comp instanceof JLabel) {
                 answerImageLabel = (JLabel) comp;
             }
@@ -238,7 +236,7 @@ public class CompoundShapePanel extends JPanel {
         }
         centerPanel.revalidate();
         centerPanel.repaint();
-        feedbackLabel.setText(correct ? "Correct! Well done!" : "");
+        feedbackLabel.setText(correct ? "Correct! Well done!" : "Incorrect, here is the answer.");
         // 不再自动跳转，由用户点击按钮决定下一步
     }
 

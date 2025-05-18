@@ -59,7 +59,13 @@ public class SectorAreaPanel extends JPanel {
         centerPanel.add(Box.createVerticalStrut(10));
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        centerPanel.add(feedbackLabel);
+        feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JPanel feedbackPanel = new JPanel();
+        feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.X_AXIS));
+        feedbackPanel.add(Box.createHorizontalGlue());
+        feedbackPanel.add(feedbackLabel);
+        feedbackPanel.add(Box.createHorizontalGlue());
+        centerPanel.add(feedbackPanel);
         centerPanel.add(Box.createVerticalStrut(10));
         JLabel answerImageLabel = new JLabel("");
         answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -198,13 +204,11 @@ public class SectorAreaPanel extends JPanel {
         // 保留题目原图，在下方展示答案图片
         String answerImgPath = String.format("src/resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
-        // 按400px宽度等比缩放
         int targetWidth = 400;
         int imgW = answerIcon.getIconWidth();
         int imgH = answerIcon.getIconHeight();
         int targetHeight = (int) (imgH * (targetWidth / (double) imgW));
         Image answerImg = answerIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-        // 找到centerPanel中的answerImageLabel（确保唯一且不被多次设置）
         JPanel centerPanel = (JPanel) imageLabel.getParent();
         JLabel answerImageLabel = null;
         for (Component comp : centerPanel.getComponents()) {
@@ -217,10 +221,9 @@ public class SectorAreaPanel extends JPanel {
             answerImageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
             answerImageLabel.setVisible(true);
         }
-        // 强制刷新界面
         centerPanel.revalidate();
         centerPanel.repaint();
-        feedbackLabel.setText(correct ? "Correct! Well done!" : "");
+        feedbackLabel.setText(correct ? "Correct! Well done!" : "Incorrect, here is the answer.");
         // 不再自动跳转，由用户点击按钮决定下一步
     }
 
