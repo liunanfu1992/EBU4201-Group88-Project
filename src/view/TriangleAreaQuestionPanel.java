@@ -3,11 +3,13 @@ package src.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import src.model.ScoringUtil;
+import src.model.ScoreManager;
 
 public class TriangleAreaQuestionPanel extends JPanel {
     private JFrame parentFrame;
     private int base, height, correctArea, attempts = 0;
-    private JLabel timerLabel, feedbackLabel, questionLabel;
+    private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
     private JTextField answerField;
     private JButton submitButton, nextButton, homeButton;
     private Timer timer;
@@ -15,6 +17,8 @@ public class TriangleAreaQuestionPanel extends JPanel {
     private JPanel explainPanel;
     private JLabel formulaLabel, calcLabel;
     private TriangleDrawingPanel drawingPanel;
+    private int score = 0; // 总分
+    private final boolean isAdvanced = false; // 普通图形为基础题型
 
     public TriangleAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
@@ -25,6 +29,9 @@ public class TriangleAreaQuestionPanel extends JPanel {
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(timerLabel, BorderLayout.NORTH);
+        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(scoreLabel, BorderLayout.NORTH);
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.add(Box.createVerticalStrut(10));
@@ -101,6 +108,11 @@ public class TriangleAreaQuestionPanel extends JPanel {
         attempts++;
         if (ans == correctArea) {
             timer.stop();
+            int points = ScoringUtil.getScore(isAdvanced, attempts);
+            score += points;
+            ScoreManager.getInstance().addScore(points);
+            feedbackLabel.setText("Correct! +" + points + " points. Great job!");
+            scoreLabel.setText("Score: " + score);
             showSolution(true, false);
         } else {
             if (attempts >= 3) {

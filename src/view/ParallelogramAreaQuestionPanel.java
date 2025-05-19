@@ -3,6 +3,7 @@ package src.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import src.model.ScoreManager;
 
 public class ParallelogramAreaQuestionPanel extends JPanel {
     private JFrame parentFrame;
@@ -102,6 +103,8 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         if (ans == correctArea) {
             timer.stop();
             showSolution(true, false);
+            int points = 10; // Assuming a default points value
+            ScoreManager.getInstance().addScore(points);
         } else {
             if (attempts >= 3) {
                 timer.stop();

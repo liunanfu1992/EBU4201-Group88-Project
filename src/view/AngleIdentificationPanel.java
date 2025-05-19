@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import src.model.ScoringUtil;
+import src.model.ScoreManager;
 
 public class AngleIdentificationPanel extends JPanel {
     private JFrame parentFrame;
@@ -17,6 +19,7 @@ public class AngleIdentificationPanel extends JPanel {
     private int currentIndex = 0;
     private int attempts = 0;
     private int score = 0;
+    private final boolean isAdvanced = false; // 角度识别为基础题型
 
     private JLabel angleLabel;
     private JTextField answerField;
@@ -241,25 +244,35 @@ public class AngleIdentificationPanel extends JPanel {
             return;
         }
         String userAnswer = answerField.getText().trim().toLowerCase();
-        typeAttempts++;
+        attempts++;
         String correctType = currentAngleType == null ? "none" : currentAngleType.name().toLowerCase();
         if (userAnswer.equals(correctType)) {
-            feedbackLabel.setText("Correct! This is a " + correctType + " angle.");
+            int points = ScoringUtil.getScore(isAdvanced, attempts);
+            score += points;
+            ScoreManager.getInstance().addScore(points);
+            scoreLabel.setText("Score: " + score);
+            feedbackLabel.setText("Correct! +" + points + " points. Great job!");
             currentAngleValue = -1;
             angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
             showAnglePrompt = false;
             updateAnglePrompt();
+            Timer timer = new Timer(1200, e -> loadNextQuestion());
+            timer.setRepeats(false);
+            timer.start();
         } else {
-            if (typeAttempts >= 3) {
-                feedbackLabel.setText("Incorrect! The correct answer is: " + correctType + ".");
+            if (attempts >= 3) {
+                feedbackLabel.setText("Incorrect! The correct answer is: " + correctType);
                 currentAngleValue = -1;
                 angleDrawingPanel.setAngle(-1);
                 angleLabel.setText("");
                 showAnglePrompt = false;
                 updateAnglePrompt();
+                Timer timer = new Timer(1800, e -> loadNextQuestion());
+                timer.setRepeats(false);
+                timer.start();
             } else {
-                feedbackLabel.setText("Try again! Attempts left: " + (3 - typeAttempts));
+                feedbackLabel.setText("Try again! Attempts left: " + (3 - attempts));
             }
         }
     }

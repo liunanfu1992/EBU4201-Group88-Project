@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import src.model.ScoringUtil;
+import src.model.ScoreManager;
 
 public class SectorAreaPanel extends JPanel {
     private JFrame parentFrame;
@@ -23,6 +25,9 @@ public class SectorAreaPanel extends JPanel {
     // 题目数据
     private double correctAnswer;
     private String breakdown;
+
+    private int score = 0; // 总分
+    private final boolean isAdvanced = true; // 扇形为高级题型
 
     public SectorAreaPanel(JFrame frame, int sectorIndex, boolean[] completed) {
         this.parentFrame = frame;
@@ -187,6 +192,12 @@ public class SectorAreaPanel extends JPanel {
         if (correct) {
             timer.stop();
             completed[sectorIndex] = true;
+            int points = ScoringUtil.getScore(isAdvanced, attempts);
+            score += points;
+            ScoreManager.getInstance().addScore(points);
+            feedbackLabel.setText("Correct! +" + points + " points. Great job!");
+            // 实时显示总分
+            timerLabel.setText("Score: " + score);
             showSolution(true, false);
         } else {
             if (attempts >= 3) {

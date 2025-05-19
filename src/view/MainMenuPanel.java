@@ -2,6 +2,7 @@ package src.view;
 
 import javax.swing.*;
 import java.awt.*;
+import src.model.ScoreManager;
 
 public class MainMenuPanel extends JPanel {
     private JFrame parentFrame;
@@ -110,7 +111,9 @@ public class MainMenuPanel extends JPanel {
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
         endSessionButton.addActionListener(e -> {
-            JOptionPane.showMessageDialog(parentFrame, "You have achieved 0 points in this session. Goodbye!", "Session Ended", JOptionPane.INFORMATION_MESSAGE);
+            int totalScore = ScoreManager.getInstance().getTotalScore();
+            JOptionPane.showMessageDialog(parentFrame, "You have achieved " + totalScore + " points in this session. Goodbye!", "Session Ended", JOptionPane.INFORMATION_MESSAGE);
+            ScoreManager.getInstance().resetScore();
             System.exit(0);
         });
         homeButton.addActionListener(e -> {

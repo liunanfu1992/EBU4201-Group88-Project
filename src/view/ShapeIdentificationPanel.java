@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import src.model.ScoringUtil;
+import src.model.ScoreManager;
 
 public class ShapeIdentificationPanel extends JPanel {
     private JFrame parentFrame;
@@ -18,6 +20,7 @@ public class ShapeIdentificationPanel extends JPanel {
     private int attempts = 0;
     private int score = 0;
     private boolean is2DMode;
+    private final boolean isAdvanced = false;
 
     private JLabel shapeLabel;
     private JTextField answerField;
@@ -145,9 +148,9 @@ public class ShapeIdentificationPanel extends JPanel {
         String userAnswer = answerField.getText();
         attempts++;
         if (currentQuestion.checkAnswer(userAnswer)) {
-            int points = 4 - attempts; // 1st:3, 2nd:2, 3rd:1
-            if (points < 1) points = 1;
+            int points = ScoringUtil.getScore(isAdvanced, attempts);
             score += points;
+            ScoreManager.getInstance().addScore(points);
             scoreLabel.setText("Score: " + score);
             feedbackLabel.setText("Correct! +" + points + " point(s). Great job!");
             currentIndex++;

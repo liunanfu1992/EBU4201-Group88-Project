@@ -3,11 +3,13 @@ package src.view;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import src.model.ScoringUtil;
+import src.model.ScoreManager;
 
 public class RectangleAreaQuestionPanel extends JPanel {
     private JFrame parentFrame;
     private int length, width, correctArea, attempts = 0;
-    private JLabel timerLabel, feedbackLabel, questionLabel;
+    private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
     private JTextField answerField;
     private JButton submitButton, nextButton, homeButton;
     private Timer timer;
@@ -16,6 +18,8 @@ public class RectangleAreaQuestionPanel extends JPanel {
     private JPanel explainPanel;
     private JLabel formulaLabel, calcLabel;
     private RectangleDrawingPanel drawingPanel;
+    private int score = 0; // 总分
+    private final boolean isAdvanced = false; // 普通图形为基础题型
 
     public RectangleAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
@@ -30,6 +34,11 @@ public class RectangleAreaQuestionPanel extends JPanel {
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
         timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(timerLabel, BorderLayout.NORTH);
+
+        // 顶部分数
+        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        add(scoreLabel, BorderLayout.NORTH);
 
         // 中部主面板
         JPanel centerPanel = new JPanel();
@@ -125,6 +134,11 @@ public class RectangleAreaQuestionPanel extends JPanel {
         attempts++;
         if (ans == correctArea) {
             timer.stop();
+            int points = ScoringUtil.getScore(isAdvanced, attempts);
+            score += points;
+            ScoreManager.getInstance().addScore(points);
+            feedbackLabel.setText("Correct! +" + points + " points. Great job!");
+            scoreLabel.setText("Score: " + score);
             showSolution(true, false);
         } else {
             if (attempts >= 3) {

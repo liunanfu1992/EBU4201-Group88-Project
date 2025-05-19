@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
+import src.model.ScoringUtil;
+import src.model.ScoreManager;
 
 public class CompoundShapePanel extends JPanel {
     private JFrame parentFrame;
@@ -29,6 +31,8 @@ public class CompoundShapePanel extends JPanel {
     private double correctAnswer;
     private String formula;
     private String breakdown;
+
+    private final boolean isAdvanced = true; // 复合图形为高级题型
 
     public CompoundShapePanel(JFrame frame, int shapeIndex, boolean[] completed) {
         this.parentFrame = frame;
@@ -190,6 +194,11 @@ public class CompoundShapePanel extends JPanel {
         if (correct) {
             timer.stop();
             completed[shapeIndex] = true;
+            int points = ScoringUtil.getScore(isAdvanced, attempts);
+            score += points;
+            ScoreManager.getInstance().addScore(points);
+            scoreLabel.setText("Score: " + score);
+            feedbackLabel.setText("Correct! +" + points + " points. Great job!");
             showSolution(true, false);
         } else {
             if (attempts >= 3) {
