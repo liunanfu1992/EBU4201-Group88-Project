@@ -142,7 +142,7 @@ public class CompoundShapePanel extends JPanel {
             "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown).",
-            "Not available yet.",
+            "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown).",
             "Calculate the area of this compound shape (split as shown)."
         };
