@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class ShapeAreaPanel extends JPanel {
     private JFrame parentFrame;
-    private Set<String> practicedShapes = new HashSet<>();
+    private static Set<String> completedShapes = new HashSet<>();
 
     public ShapeAreaPanel(JFrame frame) {
         this.parentFrame = frame;
@@ -52,6 +52,25 @@ public class ShapeAreaPanel extends JPanel {
         triBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         trapBtn.setHorizontalTextPosition(SwingConstants.CENTER);
         trapBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        // 检查并禁用已完成的按钮
+        if (completedShapes.contains("Rectangle")) {
+            rectBtn.setEnabled(false);
+            rectBtn.setText("Rectangle (Completed)");
+        }
+        if (completedShapes.contains("Parallelogram")) {
+            paraBtn.setEnabled(false);
+            paraBtn.setText("Parallelogram (Completed)");
+        }
+        if (completedShapes.contains("Triangle")) {
+            triBtn.setEnabled(false);
+            triBtn.setText("Triangle (Completed)");
+        }
+        if (completedShapes.contains("Trapezium")) {
+            trapBtn.setEnabled(false);
+            trapBtn.setText("Trapezium (Completed)");
+        }
+
         // Rectangle按钮事件
         rectBtn.addActionListener(e -> {
             parentFrame.setContentPane(new RectangleAreaQuestionPanel(parentFrame));
@@ -88,6 +107,10 @@ public class ShapeAreaPanel extends JPanel {
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(homeBtn);
         add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    public static void markShapeAsCompleted(String shapeType) {
+        completedShapes.add(shapeType);
     }
 
     // 等比例缩放图片，最大边为maxDim

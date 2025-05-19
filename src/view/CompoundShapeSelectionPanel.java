@@ -22,7 +22,6 @@ public class CompoundShapeSelectionPanel extends JPanel {
         add(title, BorderLayout.NORTH);
 
         JPanel gridPanel = new JPanel(new GridLayout(2, 3, 20, 20));
-        // 只保留剩余6题，原索引1、2、3、4、7、8
         int[] validIdx = {1, 2, 3, 4, 7, 8};
         for (int i = 0; i < 6; i++) {
             int idx = validIdx[i];

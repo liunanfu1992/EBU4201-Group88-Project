@@ -69,8 +69,8 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(explainPanel);
         add(centerPanel, BorderLayout.CENTER);
-        nextButton = new JButton("Next Shape");
-        nextButton.setEnabled(false);
+        nextButton = new JButton("Back to Selection");
+        nextButton.setEnabled(true);
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(nextButton);
@@ -105,6 +105,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             showSolution(true, false);
             int points = 10; // Assuming a default points value
             ScoreManager.getInstance().addScore(points);
+            ShapeAreaPanel.markShapeAsCompleted("Parallelogram");
         } else {
             if (attempts >= 3) {
                 timer.stop();

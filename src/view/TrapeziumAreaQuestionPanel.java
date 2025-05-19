@@ -76,8 +76,8 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
         centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(explainPanel);
         add(centerPanel, BorderLayout.CENTER);
-        nextButton = new JButton("Next Shape");
-        nextButton.setEnabled(false);
+        nextButton = new JButton("Back to Selection");
+        nextButton.setEnabled(true);
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(nextButton);
@@ -114,6 +114,7 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
             ScoreManager.getInstance().addScore(points);
             feedbackLabel.setText("Correct! +" + points + " points. Great job!");
             scoreLabel.setText("Score: " + score);
+            ShapeAreaPanel.markShapeAsCompleted("Trapezium");
             showSolution(true, false);
         } else {
             if (attempts >= 3) {

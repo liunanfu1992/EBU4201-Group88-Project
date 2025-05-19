@@ -23,6 +23,7 @@ public class AreaCalculationPanel extends JPanel {
     private JLabel feedbackLabel;
     private JLabel scoreLabel;
     private JLabel imageLabel;
+    private JLabel shapeImageLabel;
 
     // 当前题目参数
     private double[] params;
@@ -61,6 +62,13 @@ public class AreaCalculationPanel extends JPanel {
         answerField = new JTextField();
         centerPanel.add(answerField);
 
+        // 新增：输入框下方的题型示意图片
+        shapeImageLabel = new JLabel();
+        shapeImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        centerPanel.add(Box.createVerticalStrut(8));
+        centerPanel.add(shapeImageLabel);
+        centerPanel.add(Box.createVerticalStrut(8));
+
         submitButton = new JButton("Submit");
         centerPanel.add(submitButton);
 
@@ -74,6 +82,8 @@ public class AreaCalculationPanel extends JPanel {
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(homeButton);
+        JButton nextButton = new JButton("Back to Selection");
+        bottomPanel.add(nextButton);
         JButton circleButton = new JButton("Go to Circle Calculation");
         bottomPanel.add(circleButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -89,6 +99,13 @@ public class AreaCalculationPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 goHome();
+            }
+        });
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
+                parentFrame.revalidate();
             }
         });
         circleButton.addActionListener(new ActionListener() {
@@ -108,6 +125,7 @@ public class AreaCalculationPanel extends JPanel {
             submitButton.setEnabled(false);
             answerField.setEnabled(false);
             imageLabel.setIcon(null);
+            shapeImageLabel.setIcon(null);
             questionLabel.setText("");
             return;
         }
@@ -136,6 +154,28 @@ public class AreaCalculationPanel extends JPanel {
         imageLabel.setIcon(icon);
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
+
+        // 新增：输入框下方的题型示意图片
+        String btnImgPath = null;
+        switch (shape) {
+            case "Rectangle": btnImgPath = "src/resources/images/task3/RECTANGLE.png"; break;
+            case "Triangle": btnImgPath = "src/resources/images/task3/TRANGLE.png"; break;
+            case "Parallelogram": btnImgPath = "src/resources/images/task3/PARALLELOGRAM.png"; break;
+            case "Trapezium": btnImgPath = "src/resources/images/task3/TRAPEZNM.png"; break;
+        }
+        if (btnImgPath != null) {
+            ImageIcon btnIcon = new ImageIcon(btnImgPath);
+            int btnMaxDim = 120;
+            int w = btnIcon.getIconWidth(), h = btnIcon.getIconHeight();
+            double scale = 1.0 * btnMaxDim / Math.max(w, h);
+            int newW = (int)(w * scale), newH = (int)(h * scale);
+            Image btnImg = btnIcon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+            shapeImageLabel.setIcon(new ImageIcon(btnImg));
+            shapeImageLabel.setText("");
+        } else {
+            shapeImageLabel.setIcon(null);
+        }
+
         Random rand = new Random();
         switch (shape) {
             case "Rectangle": {

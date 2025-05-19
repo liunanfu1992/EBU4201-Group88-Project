@@ -63,7 +63,7 @@ public class ShapeIdentificationPanel extends JPanel {
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         imageLabel = new JLabel("", SwingConstants.CENTER);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0)); // 上下留白
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // 上下留白更小
         centerPanel.add(imageLabel);
         shapeLabel = new JLabel("", SwingConstants.CENTER);
         shapeLabel.setFont(new Font("Arial", Font.BOLD, 32));
@@ -75,12 +75,12 @@ public class ShapeIdentificationPanel extends JPanel {
         centerPanel.add(answerField);
         submitButton = new JButton("Submit");
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(Box.createVerticalStrut(4));
         centerPanel.add(submitButton);
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(Box.createVerticalStrut(4));
         centerPanel.add(feedbackLabel);
         // 进度条
         JPanel progressPanel = new JPanel();
@@ -91,7 +91,7 @@ public class ShapeIdentificationPanel extends JPanel {
             progressLabels[i].setFont(new Font("Arial", Font.BOLD, 32));
             progressPanel.add(progressLabels[i]);
         }
-        centerPanel.add(Box.createVerticalStrut(20));
+        centerPanel.add(Box.createVerticalStrut(8));
         centerPanel.add(progressPanel);
         add(centerPanel, BorderLayout.CENTER);
 

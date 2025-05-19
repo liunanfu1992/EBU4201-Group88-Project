@@ -29,9 +29,6 @@ public class CircleCalculationPanel extends JPanel {
         titleLabel = new JLabel("Circle Area & Circumference Calculation", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(titleLabel, BorderLayout.NORTH);
-        progressLabel = new JLabel(getProgressText(), SwingConstants.CENTER);
-        progressLabel.setFont(new Font("Arial", Font.PLAIN, 16));
-        add(progressLabel, BorderLayout.SOUTH);
         showMainMenu();
     }
 
@@ -53,37 +50,58 @@ public class CircleCalculationPanel extends JPanel {
         prompt.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(prompt);
         mainPanel.add(Box.createVerticalStrut(30));
-        areaButton = new JButton("Area");
-        areaButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        areaButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        circButton = new JButton("Circumference");
-        circButton.setFont(new Font("Arial", Font.PLAIN, 20));
-        circButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        mainPanel.add(areaButton);
-        mainPanel.add(Box.createVerticalStrut(20));
-        mainPanel.add(circButton);
+
+        // 加载图片icon
+        ImageIcon areaIcon = new ImageIcon("src/resources/images/task4/area.png");
+        ImageIcon circIcon = new ImageIcon("src/resources/images/task4/circumference.png");
+        int iconMaxDim = 280;
+        areaIcon = scaleIconProportionally(areaIcon, iconMaxDim);
+        circIcon = scaleIconProportionally(circIcon, iconMaxDim);
+
+        areaButton = new JButton("Area", areaIcon);
+        areaButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        areaButton.setPreferredSize(new Dimension(300, 300));
+        areaButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        areaButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+        circButton = new JButton("Circumference", circIcon);
+        circButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        circButton.setPreferredSize(new Dimension(300, 300));
+        circButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        circButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+
+        // 判断是否已完成，已完成则禁用并标记
+        if (finished.contains("area-radius") || finished.contains("area-diameter")) {
+            areaButton.setEnabled(false);
+            areaButton.setText("Area (Completed)");
+        }
+        if (finished.contains("circ-radius") || finished.contains("circ-diameter")) {
+            circButton.setEnabled(false);
+            circButton.setText("Circumference (Completed)");
+        }
+
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 0));
+        buttonPanel.add(areaButton);
+        buttonPanel.add(circButton);
+        buttonPanel.setOpaque(false);
+        mainPanel.add(buttonPanel);
+
+        // 主菜单底部只保留Home按钮
+        JButton homeBtn = new JButton("Home");
+        homeBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 18));
+        bottomPanel.add(homeBtn);
+        add(bottomPanel, BorderLayout.SOUTH);
+        homeBtn.addActionListener(e -> {
+            parentFrame.setContentPane(new MainMenuPanel(parentFrame));
+            parentFrame.revalidate();
+        });
         add(mainPanel, BorderLayout.CENTER);
         revalidate(); repaint();
         areaButton.addActionListener(e -> startQuestion(true));
         circButton.addActionListener(e -> startQuestion(false));
     }
 
-    private void startQuestion(boolean area) {
-        isArea = area;
-        // 随机分配未完成的参数类型
-        String keyRadius = (isArea ? "area-radius" : "circ-radius");
-        String keyDiameter = (isArea ? "area-diameter" : "circ-diameter");
-        if (!finished.contains(keyRadius) && !finished.contains(keyDiameter)) {
-            isRadius = new Random().nextBoolean();
-        } else if (!finished.contains(keyRadius)) {
-            isRadius = true;
-        } else if (!finished.contains(keyDiameter)) {
-            isRadius = false;
-        } else {
-            // 该类型已全部完成
-            showMainMenu();
-            return;
-        }
+    private void showQuestionPanel() {
         removeCenter();
         questionPanel = new JPanel();
         questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
@@ -131,6 +149,8 @@ public class CircleCalculationPanel extends JPanel {
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(feedbackLabel);
         add(questionPanel, BorderLayout.CENTER);
+        // 底部按钮
+        addQuestionBottomBar();
         revalidate(); repaint();
         // 计时
         timeLeft = 180;
@@ -144,6 +164,45 @@ public class CircleCalculationPanel extends JPanel {
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
         submitButton.addActionListener(e -> checkAnswer());
+    }
+
+    private void addQuestionBottomBar() {
+        // 先移除原有底部
+        if (getComponentCount() > 1) remove(1);
+        JButton homeBtn = new JButton("Home");
+        homeBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        JButton backBtn = new JButton("Back to Selection");
+        backBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 18));
+        bottomPanel.add(homeBtn);
+        bottomPanel.add(backBtn);
+        add(bottomPanel, BorderLayout.SOUTH);
+        homeBtn.addActionListener(e -> {
+            parentFrame.setContentPane(new MainMenuPanel(parentFrame));
+            parentFrame.revalidate();
+        });
+        backBtn.addActionListener(e -> {
+            showMainMenu();
+        });
+    }
+
+    private void startQuestion(boolean area) {
+        isArea = area;
+        // 随机分配未完成的参数类型
+        String keyRadius = (isArea ? "area-radius" : "circ-radius");
+        String keyDiameter = (isArea ? "area-diameter" : "circ-diameter");
+        if (!finished.contains(keyRadius) && !finished.contains(keyDiameter)) {
+            isRadius = new Random().nextBoolean();
+        } else if (!finished.contains(keyRadius)) {
+            isRadius = true;
+        } else if (!finished.contains(keyDiameter)) {
+            isRadius = false;
+        } else {
+            // 该类型已全部完成
+            showMainMenu();
+            return;
+        }
+        showQuestionPanel();
     }
 
     private void updateTimer() {
@@ -183,7 +242,17 @@ public class CircleCalculationPanel extends JPanel {
         submitButton.setEnabled(false);
         // 只有答对才算完成
         String key = (isArea ? "area-" : "circ-") + (isRadius ? "radius" : "diameter");
-        if (correct) finished.add(key);
+        if (correct) {
+            finished.add(key);
+            // 只要答对一次，Area或Circumference都算完成
+            if (isArea) {
+                finished.add("area-radius");
+                finished.add("area-diameter");
+            } else {
+                finished.add("circ-radius");
+                finished.add("circ-diameter");
+            }
+        }
         // 展示讲解区
         removeCenter();
         explainPanel = new JPanel();
@@ -226,27 +295,8 @@ public class CircleCalculationPanel extends JPanel {
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(calcLabel);
         explainPanel.add(Box.createVerticalStrut(20));
-        // 下一题或完成
-        nextButton = new JButton(finished.size() < 4 ? "Next" : "Finish");
-        nextButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        nextButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        explainPanel.add(nextButton);
-        homeButton = new JButton("Home");
-        homeButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        explainPanel.add(Box.createVerticalStrut(10));
-        explainPanel.add(homeButton);
         add(explainPanel, BorderLayout.CENTER);
-        progressLabel.setText(getProgressText());
         revalidate(); repaint();
-        nextButton.addActionListener(e -> {
-            if (finished.size() < 4) showMainMenu();
-            else showComplete();
-        });
-        homeButton.addActionListener(e -> {
-            parentFrame.setContentPane(new MainMenuPanel(parentFrame));
-            parentFrame.revalidate();
-        });
     }
 
     private void showComplete() {
@@ -264,7 +314,6 @@ public class CircleCalculationPanel extends JPanel {
         homeBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         donePanel.add(homeBtn);
         add(donePanel, BorderLayout.CENTER);
-        progressLabel.setText(getProgressText());
         revalidate(); repaint();
         homeBtn.addActionListener(e -> {
             parentFrame.setContentPane(new MainMenuPanel(parentFrame));
@@ -314,5 +363,16 @@ public class CircleCalculationPanel extends JPanel {
                 g2.drawString("diameter = " + diameter, cx - 30, cy - 10);
             }
         }
+    }
+
+    // 等比例缩放图片，最大边为maxDim
+    private ImageIcon scaleIconProportionally(ImageIcon icon, int maxDim) {
+        int w = icon.getIconWidth();
+        int h = icon.getIconHeight();
+        double scale = 1.0 * maxDim / Math.max(w, h);
+        int newW = (int)(w * scale);
+        int newH = (int)(h * scale);
+        Image img = icon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
     }
 } 

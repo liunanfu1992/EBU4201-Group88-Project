@@ -43,7 +43,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
         // 中部主面板
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0)); // 底部边距设为0
         centerPanel.add(Box.createVerticalStrut(4));
 
         // 题干区
@@ -72,32 +72,35 @@ public class RectangleAreaQuestionPanel extends JPanel {
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
 
-        // 讲解区（初始隐藏）
+        // 图片区（单独放在反馈消息下方）
+        drawingPanel = new RectangleDrawingPanel(length, width);
+        drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        drawingPanel.setVisible(false);
+        centerPanel.add(Box.createVerticalStrut(4));
+        centerPanel.add(drawingPanel);
+        centerPanel.add(Box.createVerticalStrut(2)); // 图形和explainPanel之间更紧凑
+
+        // 讲解区（只保留公式和Substitute说明）
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         explainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         formulaLabel = new JLabel("Formula: A = length × width", SwingConstants.CENTER);
         formulaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         formulaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        drawingPanel = new RectangleDrawingPanel(length, width);
-        drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         calcLabel = new JLabel("Substitute: A = " + length + " × " + width + " = " + correctArea, SwingConstants.CENTER);
         calcLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(formulaLabel);
-        explainPanel.add(Box.createVerticalStrut(4));
-        explainPanel.add(drawingPanel);
-        explainPanel.add(Box.createVerticalStrut(4));
+        explainPanel.add(Box.createVerticalStrut(2));
         explainPanel.add(calcLabel);
         explainPanel.setVisible(false);
-        centerPanel.add(Box.createVerticalStrut(8));
         centerPanel.add(explainPanel);
 
         add(centerPanel, BorderLayout.CENTER);
 
         // 底部按钮
-        nextButton = new JButton("Next Shape");
-        nextButton.setEnabled(false);
+        nextButton = new JButton("Back to Selection");
+        nextButton.setEnabled(true);
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(nextButton);
@@ -140,6 +143,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
             ScoreManager.getInstance().addScore(points);
             feedbackLabel.setText("Correct! +" + points + " points. Great job!");
             scoreLabel.setText("Score: " + score);
+            ShapeAreaPanel.markShapeAsCompleted("Rectangle");
             showSolution(true, false);
         } else {
             if (attempts >= 3) {
@@ -155,6 +159,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
         nextButton.setEnabled(true);
+        drawingPanel.setVisible(true);
         explainPanel.setVisible(true);
         if (correct) {
             feedbackLabel.setText("Correct! Area = " + correctArea);
@@ -181,7 +186,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
         public RectangleDrawingPanel(int l, int w) {
             this.length = l;
             this.width = w;
-            setPreferredSize(new Dimension(320, 160)); // 适当加大高度
+            setPreferredSize(new Dimension(320, 110)); // 减小高度让下方更靠近
         }
         @Override
         protected void paintComponent(Graphics g) {
