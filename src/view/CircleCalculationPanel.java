@@ -6,6 +6,8 @@ import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Random;
+import src.model.ScoreManager;
+import src.model.ScoringUtil;
 
 public class CircleCalculationPanel extends JPanel {
     private JFrame parentFrame;
@@ -42,6 +44,7 @@ public class CircleCalculationPanel extends JPanel {
 
     private void showMainMenu() {
         removeCenter();
+        removeSouthPanel();
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
@@ -168,7 +171,7 @@ public class CircleCalculationPanel extends JPanel {
 
     private void addQuestionBottomBar() {
         // 先移除原有底部
-        if (getComponentCount() > 1) remove(1);
+        removeSouthPanel();
         JButton homeBtn = new JButton("Home");
         homeBtn.setFont(new Font("Arial", Font.PLAIN, 20));
         JButton backBtn = new JButton("Back to Selection");
@@ -226,6 +229,8 @@ public class CircleCalculationPanel extends JPanel {
         attempts++;
         if (ans == correctCoeff) {
             timer.stop();
+            int points = ScoringUtil.getScore(false, attempts);
+            ScoreManager.getInstance().addScore(points);
             showSolution(true, false);
         } else {
             if (attempts >= 3) {
@@ -374,5 +379,17 @@ public class CircleCalculationPanel extends JPanel {
         int newH = (int)(h * scale);
         Image img = icon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
+    }
+
+    // 移除BorderLayout.SOUTH已有组件
+    private void removeSouthPanel() {
+        // BorderLayout.SOUTH只能有一个组件，遍历移除
+        for (Component comp : getComponents()) {
+            Object cons = getLayout() instanceof BorderLayout ? ((BorderLayout)getLayout()).getConstraints(comp) : null;
+            if (cons != null && cons.equals(BorderLayout.SOUTH)) {
+                remove(comp);
+                break;
+            }
+        }
     }
 } 
