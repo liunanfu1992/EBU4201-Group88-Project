@@ -43,14 +43,15 @@ public class RectangleAreaQuestionPanel extends JPanel {
         // 中部主面板
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 8, 0));
+        centerPanel.add(Box.createVerticalStrut(4));
 
         // 题干区
         questionLabel = new JLabel("The length of the rectangle is " + length + ", the width is " + width + ". Please calculate its area.", SwingConstants.CENTER);
         questionLabel.setFont(new Font("Arial", Font.BOLD, 18));
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
-        centerPanel.add(Box.createVerticalStrut(20));
+        centerPanel.add(Box.createVerticalStrut(6));
 
         // 输入区
         JPanel inputPanel = new JPanel();
@@ -84,12 +85,12 @@ public class RectangleAreaQuestionPanel extends JPanel {
         calcLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(formulaLabel);
-        explainPanel.add(Box.createVerticalStrut(10));
+        explainPanel.add(Box.createVerticalStrut(4));
         explainPanel.add(drawingPanel);
-        explainPanel.add(Box.createVerticalStrut(10));
+        explainPanel.add(Box.createVerticalStrut(4));
         explainPanel.add(calcLabel);
         explainPanel.setVisible(false);
-        centerPanel.add(Box.createVerticalStrut(20));
+        centerPanel.add(Box.createVerticalStrut(8));
         centerPanel.add(explainPanel);
 
         add(centerPanel, BorderLayout.CENTER);

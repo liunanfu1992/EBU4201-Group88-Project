@@ -29,7 +29,7 @@ public class ShapeAreaPanel extends JPanel {
         ImageIcon triIcon = new ImageIcon("src/resources/images/task3/TRANGLE.png");
         ImageIcon trapIcon = new ImageIcon("src/resources/images/task3/TRAPEZNM.png");
         // 缩放图片
-        int maxDim = 160;
+        int maxDim = 240;
         rectIcon = scaleIconProportionally(rectIcon, maxDim);
         paraIcon = scaleIconProportionally(paraIcon, maxDim);
         triIcon = scaleIconProportionally(triIcon, maxDim);
