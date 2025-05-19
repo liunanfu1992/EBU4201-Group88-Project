@@ -22,6 +22,8 @@ public class ShapeIdentificationPanel extends JPanel {
     private boolean is2DMode;
     private boolean isAdvanced;
     private static final int PRACTICE_COUNT = 4;
+    private static boolean completed2D = false;
+    private static boolean completed3D = false;
 
     private JLabel shapeLabel;
     private JTextField answerField;
@@ -159,6 +161,8 @@ public class ShapeIdentificationPanel extends JPanel {
             answerField.setVisible(false);
             submitButton.setVisible(false);
             feedbackLabel.setText("Final Score: " + score + "/" + getMaxScore());
+            if (is2DMode) completed2D = true;
+            else completed3D = true;
         }
     }
 
@@ -208,4 +212,7 @@ public class ShapeIdentificationPanel extends JPanel {
     private int getMaxScore() {
         return isAdvanced ? 24 : 12;
     }
+
+    public static boolean is2DCompleted() { return completed2D; }
+    public static boolean is3DCompleted() { return completed3D; }
 } 

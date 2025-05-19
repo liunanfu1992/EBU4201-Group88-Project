@@ -392,4 +392,8 @@ public class CircleCalculationPanel extends JPanel {
             }
         }
     }
+
+    public static boolean isAllCompleted() {
+        return finished.contains("area-radius") && finished.contains("area-diameter") && finished.contains("circ-radius") && finished.contains("circ-diameter");
+    }
 } 

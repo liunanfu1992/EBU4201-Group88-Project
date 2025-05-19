@@ -113,6 +113,10 @@ public class ShapeAreaPanel extends JPanel {
         completedShapes.add(shapeType);
     }
 
+    public static boolean isAllCompleted() {
+        return completedShapes.contains("Rectangle") && completedShapes.contains("Parallelogram") && completedShapes.contains("Triangle") && completedShapes.contains("Trapezium");
+    }
+
     // 等比例缩放图片，最大边为maxDim
     private ImageIcon scaleIconProportionally(ImageIcon icon, int maxDim) {
         int w = icon.getIconWidth();

@@ -41,6 +41,7 @@ public class AngleIdentificationPanel extends JPanel {
     private Set<AngleType> practicedTypes = new HashSet<>();
     private JPanel progressPanel;
     private JLabel[] typeLabels;
+    private static boolean completed = false;
 
     public AngleIdentificationPanel(JFrame frame) {
         this.parentFrame = frame;
@@ -207,6 +208,7 @@ public class AngleIdentificationPanel extends JPanel {
             angleLabel.setText("");
             angleInputButton.setEnabled(false); // 禁用Draw Angle
             updateProgressBar();
+            completed = true;
             return;
         }
         if (currentIndex >= questions.size()) {
@@ -347,6 +349,8 @@ public class AngleIdentificationPanel extends JPanel {
             }
         }
     }
+
+    public static boolean isCompleted() { return completed; }
 }
 
 class AngleDrawingPanel extends JPanel {

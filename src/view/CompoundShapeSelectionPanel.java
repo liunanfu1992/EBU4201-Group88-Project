@@ -66,4 +66,9 @@ public class CompoundShapeSelectionPanel extends JPanel {
         bottomPanel.add(homeBtn);
         add(bottomPanel, BorderLayout.NORTH);
     }
+
+    public static boolean isAllCompleted() {
+        for (boolean b : completed) if (!b) return false;
+        return true;
+    }
 } 
