@@ -22,7 +22,7 @@ public class CircleCalculationPanel extends JPanel {
     private int radius = 0, diameter = 0;
     private double correctAnswer = 0;
     private int attempts = 0;
-    private Set<String> finished = new HashSet<>(); // 记录已完成的四种组合
+    private static Set<String> finished = new HashSet<>(); // 记录已完成的四种组合
     private int correctCoeff = 0;
 
     public CircleCalculationPanel(JFrame frame) {

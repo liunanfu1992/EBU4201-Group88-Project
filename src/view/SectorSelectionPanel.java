@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class SectorSelectionPanel extends JPanel {
     private JFrame parentFrame;
-    private boolean[] completed = new boolean[8]; // 记录每题是否完成
+    private static boolean[] completed = new boolean[8]; // 记录每题是否完成
     private JButton[] sectorButtons = new JButton[8];
     private JProgressBar progressBar;
 

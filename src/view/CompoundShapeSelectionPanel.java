@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 public class CompoundShapeSelectionPanel extends JPanel {
     private JFrame parentFrame;
-    private boolean[] completed = new boolean[6]; // 只保留6题
+    private static boolean[] completed = new boolean[6]; // 只保留6题
     private JButton[] shapeButtons = new JButton[6];
     private JProgressBar progressBar;
 
