@@ -6,9 +6,11 @@ import java.awt.*;
 public class AngleRecognitionPanel extends JPanel {
     private Integer currentAngle;
     private JTextField answerField;
+    private int attemptsLeft = 3; // 每题3次机会
+    private boolean answered = false;
 
     private void checkAnswer() {
-        if (currentAngle == null) return;
+        if (currentAngle == null || answered) return;
         
         String userInput = answerField.getText().trim();
         if (userInput.isEmpty()) {
@@ -20,15 +22,27 @@ public class AngleRecognitionPanel extends JPanel {
             int userAngle = Integer.parseInt(userInput);
             if (userAngle == currentAngle) {
                 showFeedback("Correct! Well done!", true);
-                updateProgress();
-                // 只有在显示出答案后才更新进度条
-                updateProgressBar();
+                revealAndMarkAnswered();
             } else {
-                showFeedback("Try again! The angle is " + currentAngle + "°", false);
+                attemptsLeft--;
+                if (attemptsLeft <= 0) {
+                    showFeedback("No attempts left! The correct answer is: " + currentAngle, false);
+                    revealAndMarkAnswered();
+                } else {
+                    showFeedback("Try again! Attempts left: " + attemptsLeft, false);
+                }
             }
         } catch (NumberFormatException e) {
             showFeedback("Please enter a valid number!", false);
         }
+    }
+
+    private void revealAndMarkAnswered() {
+        answered = true;
+        updateProgress();
+        updateProgressBar();
+        answerField.setEnabled(false); // 禁用输入框
+        // 如有提交按钮，也应禁用
     }
 
     private void showFeedback(String message, boolean isCorrect) {

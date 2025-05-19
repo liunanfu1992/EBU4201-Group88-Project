@@ -297,29 +297,30 @@ public class AngleIdentificationPanel extends JPanel {
         String userAnswer = answerField.getText().trim().toLowerCase();
         attempts++;
         String correctType = currentAngleType == null ? "none" : currentAngleType.name().toLowerCase();
-        // 标记已练习类型
-        if (currentAngleType != null) practicedTypes.add(currentAngleType);
-        updateProgressBar();
         if (userAnswer.equals(correctType)) {
             int points = ScoringUtil.getScore(isAdvanced, attempts);
             score += points;
             ScoreManager.getInstance().addScore(points);
             scoreLabel.setText("Score: " + score);
             feedbackLabel.setText("Correct! +" + points + " points. Great job!");
+            if (currentAngleType != null) practicedTypes.add(currentAngleType);
             currentAngleValue = -1;
             angleLabel.setText("");
             showAnglePrompt = false;
             updateAnglePrompt();
+            updateProgressBar();
             Timer timer = new Timer(1200, e -> loadNextQuestion());
             timer.setRepeats(false);
             timer.start();
         } else {
             if (attempts >= 3) {
                 feedbackLabel.setText("Incorrect! The correct answer is: " + correctType);
+                if (currentAngleType != null) practicedTypes.add(currentAngleType);
                 currentAngleValue = -1;
                 angleLabel.setText("");
                 showAnglePrompt = false;
                 updateAnglePrompt();
+                updateProgressBar();
                 Timer timer = new Timer(1800, e -> loadNextQuestion());
                 timer.setRepeats(false);
                 timer.start();
