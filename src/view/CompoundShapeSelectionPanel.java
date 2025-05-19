@@ -26,7 +26,7 @@ public class CompoundShapeSelectionPanel extends JPanel {
         int[] validIdx = {1, 2, 3, 4, 7, 8};
         for (int i = 0; i < 6; i++) {
             int idx = validIdx[i];
-            String imgPath = "resources/images/task5/Shape " + (idx + 1) + ".jpg";
+            String imgPath = "src/resources/images/task5/Shape " + (idx + 1) + ".jpg";
             ImageIcon icon = new ImageIcon(imgPath);
             Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             JButton btn = new JButton("Shape " + (idx + 1), new ImageIcon(img));

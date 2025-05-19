@@ -155,7 +155,7 @@ public class SectorAreaPanel extends JPanel {
             answers[i] = angles[i] / 360.0 * 3.14 * radii[i] * radii[i];
             breakdowns[i] = String.format("Area = (%.0f/360) × π × %.2f² = (%.0f/360) × 3.14 × %.2f × %.2f = %.2f %s²", angles[i], radii[i], angles[i], radii[i], radii[i], answers[i], units[i]);
         }
-        ImageIcon icon = new ImageIcon(imgPaths[idx]);
+        ImageIcon icon = new ImageIcon("src/" + imgPaths[idx]);
         Image img = icon.getImage().getScaledInstance(160, 160, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(img));
         questionLabel.setText(questions[idx]);
@@ -213,7 +213,7 @@ public class SectorAreaPanel extends JPanel {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
         // 保留题目原图，在下方展示答案图片
-        String answerImgPath = String.format("resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
+        String answerImgPath = String.format("src/resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
         int targetWidth = 400;
         int imgW = answerIcon.getIconWidth();

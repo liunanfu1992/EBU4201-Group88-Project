@@ -21,7 +21,7 @@ public class SectorSelectionPanel extends JPanel {
 
         JPanel gridPanel = new JPanel(new GridLayout(2, 4, 20, 20));
         for (int i = 0; i < 8; i++) {
-            String imgPath = "resources/images/task6/Shape " + (i + 1) + ".jpg";
+            String imgPath = "src/resources/images/task6/Shape " + (i + 1) + ".jpg";
             ImageIcon icon = new ImageIcon(imgPath);
             Image img = icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
             JButton btn = new JButton("Sector " + (i + 1), new ImageIcon(img));

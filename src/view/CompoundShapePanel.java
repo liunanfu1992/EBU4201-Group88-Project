@@ -215,7 +215,7 @@ public class CompoundShapePanel extends JPanel {
         submitButton.setEnabled(false);
         // 展示答案图片
         int[] validIdx = {1, 2, 3, 4, 7, 8};
-        String answerImgPath = String.format("resources/images/task5/answer/answer%d.jpg", validIdx[shapeIndex] + 1);
+        String answerImgPath = String.format("src/resources/images/task5/answer/answer%d.jpg", validIdx[shapeIndex] + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
         int targetWidth = 320;
         int imgW = answerIcon.getIconWidth();

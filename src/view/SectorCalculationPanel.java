@@ -110,7 +110,7 @@ public class SectorCalculationPanel extends JPanel {
         attempts = 0;
 
         // 加载扇形图片
-        String absPath = "resources/images/task6/Sector.png";
+        String absPath = "src/resources/images/task6/Sector.png";
         ImageIcon icon = null;
         try {
             ImageIcon rawIcon = new ImageIcon(absPath);
