@@ -9,20 +9,23 @@ public class MainMenuPanel extends JPanel {
     public MainMenuPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
+        setBackground(StyleUtil.BG_COLOR);
         JLabel titleLabel = new JLabel("Shaperville - Welcome to Geometry Learning!", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setFont(StyleUtil.TITLE_FONT);
+        titleLabel.setForeground(StyleUtil.MAIN_PURPLE);
         add(titleLabel, BorderLayout.NORTH);
 
         // KS1模块
         JPanel ks1Panel = new JPanel();
         ks1Panel.setLayout(new BoxLayout(ks1Panel, BoxLayout.Y_AXIS));
-        ks1Panel.setBorder(BorderFactory.createTitledBorder("KS1"));
+        ks1Panel.setBackground(StyleUtil.BG_COLOR);
+        ks1Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 3, true), "KS1"));
         JButton btn2d = new JButton("2D Shape Identification");
         JButton btn3d = new JButton("3D Shape Identification");
         JButton btnAngle = new JButton("Angle Identification");
-        btn2d.setFont(new Font("Arial", Font.PLAIN, 18));
-        btn3d.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnAngle.setFont(new Font("Arial", Font.PLAIN, 18));
+        StyleUtil.styleButton(btn2d, StyleUtil.MAIN_YELLOW, StyleUtil.MAIN_BLUE);
+        StyleUtil.styleButton(btn3d, StyleUtil.MAIN_PINK, StyleUtil.MAIN_PURPLE);
+        StyleUtil.styleButton(btnAngle, StyleUtil.MAIN_GREEN, Color.WHITE);
         ks1Panel.add(Box.createVerticalStrut(10));
         ks1Panel.add(btn2d);
         ks1Panel.add(Box.createVerticalStrut(10));
@@ -34,15 +37,15 @@ public class MainMenuPanel extends JPanel {
         // KS2模块
         JPanel ks2Panel = new JPanel();
         ks2Panel.setLayout(new BoxLayout(ks2Panel, BoxLayout.Y_AXIS));
-        ks2Panel.setBorder(BorderFactory.createTitledBorder("KS2"));
+        ks2Panel.setBackground(StyleUtil.BG_COLOR);
+        ks2Panel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(StyleUtil.MAIN_GREEN, 3, true), "KS2"));
         JButton btnArea = new JButton("Area Calculation of Shapes");
-        btnArea.setFont(new Font("Arial", Font.PLAIN, 18));
+        JButton btnCircle = new JButton("Circle Calculation");
+        StyleUtil.styleButton(btnArea, StyleUtil.MAIN_YELLOW, StyleUtil.MAIN_BLUE);
+        StyleUtil.styleButton(btnCircle, StyleUtil.MAIN_PINK, StyleUtil.MAIN_PURPLE);
         ks2Panel.add(Box.createVerticalStrut(20));
         ks2Panel.add(btnArea);
         ks2Panel.add(Box.createVerticalStrut(20));
-        // 预留Circle Calculation按钮
-        JButton btnCircle = new JButton("Circle Calculation");
-        btnCircle.setFont(new Font("Arial", Font.PLAIN, 18));
         btnCircle.setEnabled(true);
         ks2Panel.add(btnCircle);
         ks2Panel.add(Box.createVerticalStrut(20));
@@ -50,12 +53,13 @@ public class MainMenuPanel extends JPanel {
         // Bonus模块
         JPanel bonusPanel = new JPanel();
         bonusPanel.setLayout(new BoxLayout(bonusPanel, BoxLayout.Y_AXIS));
-        bonusPanel.setBorder(BorderFactory.createTitledBorder("Bonus"));
+        bonusPanel.setBackground(StyleUtil.BG_COLOR);
+        bonusPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(StyleUtil.MAIN_PURPLE, 3, true), "Bonus"));
         JButton btnBonus1 = new JButton("Compound Shape Challenge");
-        btnBonus1.setFont(new Font("Arial", Font.PLAIN, 18));
-        btnBonus1.setEnabled(true);
         JButton btnBonus2 = new JButton("Sector Area Challenge");
-        btnBonus2.setFont(new Font("Arial", Font.PLAIN, 18));
+        StyleUtil.styleButton(btnBonus1, StyleUtil.MAIN_GREEN, Color.WHITE);
+        StyleUtil.styleButton(btnBonus2, StyleUtil.MAIN_YELLOW, StyleUtil.MAIN_BLUE);
+        btnBonus1.setEnabled(true);
         btnBonus2.setEnabled(true);
         bonusPanel.add(Box.createVerticalStrut(20));
         bonusPanel.add(btnBonus1);
@@ -66,6 +70,7 @@ public class MainMenuPanel extends JPanel {
         // 主体三栏
         JPanel mainPanel = new JPanel(new GridLayout(1, 3, 30, 0));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        mainPanel.setBackground(StyleUtil.BG_COLOR);
         mainPanel.add(ks1Panel);
         mainPanel.add(ks2Panel);
         mainPanel.add(bonusPanel);
@@ -104,20 +109,15 @@ public class MainMenuPanel extends JPanel {
         // 底部按钮
         JPanel bottomPanel = new JPanel();
         JButton endSessionButton = new JButton("End session");
-        JButton homeButton = new JButton("Home");
-        endSessionButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        homeButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleButton(endSessionButton, StyleUtil.MAIN_PINK, StyleUtil.MAIN_PURPLE);
+        bottomPanel.setBackground(StyleUtil.BG_COLOR);
         bottomPanel.add(endSessionButton);
-        bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
         endSessionButton.addActionListener(e -> {
             int totalScore = ScoreManager.getInstance().getTotalScore();
             JOptionPane.showMessageDialog(parentFrame, "You have achieved " + totalScore + " points in this session. Goodbye!", "Session Ended", JOptionPane.INFORMATION_MESSAGE);
             ScoreManager.getInstance().resetScore();
             System.exit(0);
-        });
-        homeButton.addActionListener(e -> {
-            // Already at home menu, do nothing
         });
     }
 } 

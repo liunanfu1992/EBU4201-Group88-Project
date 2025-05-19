@@ -23,14 +23,35 @@ public class ShapeAreaPanel extends JPanel {
         shapeSelectPanel.setLayout(new GridLayout(2, 2, 30, 30));
         shapeSelectPanel.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
 
-        JButton rectBtn = new JButton("Rectangle");
-        JButton paraBtn = new JButton("Parallelogram");
-        JButton triBtn = new JButton("Triangle");
-        JButton trapBtn = new JButton("Trapezium");
+        // 加载图片
+        ImageIcon rectIcon = new ImageIcon("src/resources/images/task3/RECTANGLE.png");
+        ImageIcon paraIcon = new ImageIcon("src/resources/images/task3/PARALLELOGRAM.png");
+        ImageIcon triIcon = new ImageIcon("src/resources/images/task3/TRANGLE.png");
+        ImageIcon trapIcon = new ImageIcon("src/resources/images/task3/TRAPEZNM.png");
+        // 缩放图片
+        int maxDim = 160;
+        rectIcon = scaleIconProportionally(rectIcon, maxDim);
+        paraIcon = scaleIconProportionally(paraIcon, maxDim);
+        triIcon = scaleIconProportionally(triIcon, maxDim);
+        trapIcon = scaleIconProportionally(trapIcon, maxDim);
+
+        JButton rectBtn = new JButton("Rectangle", rectIcon);
+        JButton paraBtn = new JButton("Parallelogram", paraIcon);
+        JButton triBtn = new JButton("Triangle", triIcon);
+        JButton trapBtn = new JButton("Trapezium", trapIcon);
         rectBtn.setFont(new Font("Arial", Font.PLAIN, 20));
         paraBtn.setFont(new Font("Arial", Font.PLAIN, 20));
         triBtn.setFont(new Font("Arial", Font.PLAIN, 20));
         trapBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        // 设置图片在文字上方
+        rectBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        rectBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        paraBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        paraBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        triBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        triBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
+        trapBtn.setHorizontalTextPosition(SwingConstants.CENTER);
+        trapBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
         // Rectangle按钮事件
         rectBtn.addActionListener(e -> {
             parentFrame.setContentPane(new RectangleAreaQuestionPanel(parentFrame));
@@ -67,5 +88,16 @@ public class ShapeAreaPanel extends JPanel {
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(homeBtn);
         add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    // 等比例缩放图片，最大边为maxDim
+    private ImageIcon scaleIconProportionally(ImageIcon icon, int maxDim) {
+        int w = icon.getIconWidth();
+        int h = icon.getIconHeight();
+        double scale = 1.0 * maxDim / Math.max(w, h);
+        int newW = (int)(w * scale);
+        int newH = (int)(h * scale);
+        Image img = icon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
     }
 } 

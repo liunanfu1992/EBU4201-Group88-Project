@@ -20,7 +20,8 @@ public class ShapeIdentificationPanel extends JPanel {
     private int attempts = 0;
     private int score = 0;
     private boolean is2DMode;
-    private final boolean isAdvanced = false;
+    private boolean isAdvanced;
+    private static final int PRACTICE_COUNT = 4;
 
     private JLabel shapeLabel;
     private JTextField answerField;
@@ -29,10 +30,12 @@ public class ShapeIdentificationPanel extends JPanel {
     private JLabel feedbackLabel;
     private JLabel scoreLabel;
     private JLabel imageLabel;
+    private JLabel[] progressLabels = new JLabel[PRACTICE_COUNT];
 
     public ShapeIdentificationPanel(JFrame frame, boolean is2D) {
         this.parentFrame = frame;
         this.is2DMode = is2D;
+        this.isAdvanced = !is2D; // 3D识别为Advanced，2D为Basic
         setLayout(new BorderLayout(10, 10));
 
         // Select 2D or 3D shapes
@@ -45,6 +48,10 @@ public class ShapeIdentificationPanel extends JPanel {
             }
         }
         Collections.shuffle(shapesToIdentify);
+        // 只保留前4个
+        if (shapesToIdentify.size() > PRACTICE_COUNT) {
+            shapesToIdentify = shapesToIdentify.subList(0, PRACTICE_COUNT);
+        }
 
         // Top score label
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
@@ -75,6 +82,17 @@ public class ShapeIdentificationPanel extends JPanel {
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(feedbackLabel);
+        // 进度条
+        JPanel progressPanel = new JPanel();
+        progressPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        progressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        for (int i = 0; i < PRACTICE_COUNT; i++) {
+            progressLabels[i] = new JLabel("⬜");
+            progressLabels[i].setFont(new Font("Arial", Font.BOLD, 32));
+            progressPanel.add(progressLabels[i]);
+        }
+        centerPanel.add(Box.createVerticalStrut(20));
+        centerPanel.add(progressPanel);
         add(centerPanel, BorderLayout.CENTER);
 
         // Bottom Home button
@@ -140,19 +158,28 @@ public class ShapeIdentificationPanel extends JPanel {
             shapeLabel.setText("Congratulations! You've completed all shapes!");
             answerField.setVisible(false);
             submitButton.setVisible(false);
-            feedbackLabel.setText("Final Score: " + score + "/" + shapesToIdentify.size());
+            feedbackLabel.setText("Final Score: " + score + "/" + getMaxScore());
+        }
+    }
+
+    private void updateProgressBar(int idx, boolean correct) {
+        if (idx >= 0 && idx < PRACTICE_COUNT) {
+            progressLabels[idx].setText(correct ? "✅" : "✗");
+            progressLabels[idx].setForeground(correct ? new Color(34,197,94) : new Color(239,68,68));
         }
     }
 
     private void handleSubmit() {
         String userAnswer = answerField.getText();
         attempts++;
-        if (currentQuestion.checkAnswer(userAnswer)) {
+        boolean correct = currentQuestion.checkAnswer(userAnswer);
+        if (correct) {
             int points = ScoringUtil.getScore(isAdvanced, attempts);
             score += points;
             ScoreManager.getInstance().addScore(points);
             scoreLabel.setText("Score: " + score);
             feedbackLabel.setText("Correct! +" + points + " point(s). Great job!");
+            updateProgressBar(currentIndex, true);
             currentIndex++;
             Timer timer = new Timer(1200, e -> loadNextShape());
             timer.setRepeats(false);
@@ -160,8 +187,9 @@ public class ShapeIdentificationPanel extends JPanel {
         } else {
             if (attempts >= 3) {
                 // 正确答案下划线替换为空格
-                String correct = currentQuestion.getCorrectAnswer().replace("_", " ");
-                feedbackLabel.setText("Incorrect! The correct answer is: " + correct);
+                String correctAns = currentQuestion.getCorrectAnswer().replace("_", " ");
+                feedbackLabel.setText("Incorrect! The correct answer is: " + correctAns);
+                updateProgressBar(currentIndex, false);
                 currentIndex++;
                 Timer timer = new Timer(1800, e -> loadNextShape());
                 timer.setRepeats(false);
@@ -175,5 +203,9 @@ public class ShapeIdentificationPanel extends JPanel {
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
+    }
+
+    private int getMaxScore() {
+        return isAdvanced ? 24 : 12;
     }
 } 

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Random;
 import src.model.ScoringUtil;
 import src.model.ScoreManager;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AngleIdentificationPanel extends JPanel {
     private JFrame parentFrame;
@@ -36,6 +38,9 @@ public class AngleIdentificationPanel extends JPanel {
     private boolean showAnglePrompt = false;
     private JLabel identifyLabel;
     private JLabel tipLabel;
+    private Set<AngleType> practicedTypes = new HashSet<>();
+    private JPanel progressPanel;
+    private JLabel[] typeLabels;
 
     public AngleIdentificationPanel(JFrame frame) {
         this.parentFrame = frame;
@@ -53,11 +58,31 @@ public class AngleIdentificationPanel extends JPanel {
         // 顶部分数
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(scoreLabel, BorderLayout.NORTH);
+        // 新增五类型进度条
+        progressPanel = new JPanel();
+        progressPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 18, 2));
+        String[] typeNames = {"Acute", "Obtuse", "Right", "Straight", "Reflex"};
+        typeLabels = new JLabel[5];
+        for (int i = 0; i < 5; i++) {
+            typeLabels[i] = new JLabel(typeNames[i]);
+            typeLabels[i].setFont(new Font("Comic Sans MS", Font.BOLD, 18));
+            typeLabels[i].setOpaque(true);
+            typeLabels[i].setBackground(new Color(220, 220, 220));
+            typeLabels[i].setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+            typeLabels[i].setPreferredSize(new Dimension(90, 32));
+            typeLabels[i].setHorizontalAlignment(SwingConstants.CENTER);
+            progressPanel.add(typeLabels[i]);
+        }
+        JPanel topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+        topPanel.add(progressPanel, BorderLayout.NORTH);
+        topPanel.add(scoreLabel, BorderLayout.SOUTH);
+        add(topPanel, BorderLayout.NORTH);
 
         // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         angleInputField = new JTextField();
         angleInputField.setMaximumSize(new Dimension(120, 32));
         angleInputField.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -67,18 +92,18 @@ public class AngleIdentificationPanel extends JPanel {
         JPanel angleInputPanel = new JPanel();
         angleInputPanel.setLayout(new BoxLayout(angleInputPanel, BoxLayout.X_AXIS));
         angleInputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        angleInputPanel.add(new JLabel("Enter an angle (0-360, multiple of 10): "));
+        angleInputPanel.add(new JLabel("Enter an angle (from 0 to 360, excluding 0 and 360, multiple of 10): "));
         angleInputPanel.add(angleInputField);
         angleInputPanel.add(angleInputButton);
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(Box.createVerticalStrut(5));
         centerPanel.add(angleInputPanel);
-        centerPanel.add(Box.createVerticalStrut(10));
+        centerPanel.add(Box.createVerticalStrut(5));
         angleDrawingPanel = new AngleDrawingPanel();
         angleDrawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         angleDrawingPanel.setPreferredSize(new Dimension(260, 200));
         angleDrawingPanel.setAngle(-1); // 初始不显示角度图
         centerPanel.add(angleDrawingPanel);
-        centerPanel.add(Box.createVerticalStrut(20)); // 增加图片和文字间距
+        centerPanel.add(Box.createVerticalStrut(10)); // 图片和文字间距减少
         
         // 初始化并添加angleLabel，防止NullPointerException
         angleLabel = new JLabel("", SwingConstants.CENTER);
@@ -108,13 +133,20 @@ public class AngleIdentificationPanel extends JPanel {
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(submitButton);
 
+        // 进度条放在Submit下方
+        centerPanel.add(Box.createVerticalStrut(8));
+        centerPanel.add(progressPanel);
+
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         feedbackLabel.setHorizontalAlignment(SwingConstants.CENTER);
         centerPanel.add(feedbackLabel);
 
-        add(centerPanel, BorderLayout.CENTER);
+        JPanel outerPanel = new JPanel(new BorderLayout());
+        outerPanel.setOpaque(false);
+        outerPanel.add(centerPanel, BorderLayout.NORTH);
+        add(outerPanel, BorderLayout.CENTER);
 
         // 底部Home按钮
         homeButton = new JButton("Home");
@@ -146,6 +178,7 @@ public class AngleIdentificationPanel extends JPanel {
 
         angleDrawingPanel.setAngle(-1); // 每次重置时不显示角度图
         updateAnglePrompt();
+        updateProgressBar();
     }
 
     private int getRandomAngleForType(AngleType type, Random rand) {
@@ -166,20 +199,38 @@ public class AngleIdentificationPanel extends JPanel {
     }
 
     private void loadNextQuestion() {
+        if (practicedTypes.size() == 5) {
+            feedbackLabel.setText("All angle types practiced! Your final score: " + score);
+            submitButton.setEnabled(false);
+            answerField.setEnabled(false);
+            angleDrawingPanel.setAngle(-1); // 清空
+            angleLabel.setText("");
+            angleInputButton.setEnabled(false); // 禁用Draw Angle
+            updateProgressBar();
+            return;
+        }
         if (currentIndex >= questions.size()) {
             feedbackLabel.setText("All angles identified! Your final score: " + score);
             submitButton.setEnabled(false);
             answerField.setEnabled(false);
             angleDrawingPanel.setAngle(-1); // 清空
             angleLabel.setText("");
+            angleInputButton.setEnabled(false); // 禁用Draw Angle
+            updateProgressBar();
             return;
         }
-        AngleQuestion question = questions.get(currentIndex);
-        angleDrawingPanel.setAngle(question.getAngleValue());
-        angleLabel.setText(question.getQuestionText());
+        // 不自动生成角度，等待用户输入并点击Draw Angle
+        angleDrawingPanel.setAngle(-1);
+        angleLabel.setText("");
         answerField.setText("");
         feedbackLabel.setText(" ");
         attempts = 0;
+        currentAngleValue = -1;
+        currentAngleType = null;
+        showAnglePrompt = false;
+        updateAnglePrompt();
+        angleInputButton.setEnabled(true); // 重新开始时恢复可用
+        updateProgressBar();
     }
 
     private void handleAngleInput() {
@@ -196,8 +247,8 @@ public class AngleIdentificationPanel extends JPanel {
             updateAnglePrompt();
             return;
         }
-        if (angleValue < 0 || angleValue > 360 || angleValue % 10 != 0) {
-            feedbackLabel.setText("Angle must be 0-360 and a multiple of 10.");
+        if (angleValue < 10 || angleValue > 350 || angleValue % 10 != 0) {
+            feedbackLabel.setText("Angle must be from 0 to 360 degrees (excluding 0 and 360), and a multiple of 10.");
             currentAngleValue = -1;
             angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
@@ -213,6 +264,7 @@ public class AngleIdentificationPanel extends JPanel {
         answerField.setText("");
         feedbackLabel.setText(" ");
         typeAttempts = 0;
+        updateProgressBar();
     }
 
     private void updateAnglePrompt() {
@@ -226,7 +278,6 @@ public class AngleIdentificationPanel extends JPanel {
     }
 
     private AngleType getAngleType(int angle) {
-        if (angle == 0 || angle == 360) return null;
         if (angle < 90) return AngleType.ACUTE;
         if (angle == 90) return AngleType.RIGHT;
         if (angle < 180) return AngleType.OBTUSE;
@@ -246,6 +297,9 @@ public class AngleIdentificationPanel extends JPanel {
         String userAnswer = answerField.getText().trim().toLowerCase();
         attempts++;
         String correctType = currentAngleType == null ? "none" : currentAngleType.name().toLowerCase();
+        // 标记已练习类型
+        if (currentAngleType != null) practicedTypes.add(currentAngleType);
+        updateProgressBar();
         if (userAnswer.equals(correctType)) {
             int points = ScoringUtil.getScore(isAdvanced, attempts);
             score += points;
@@ -253,7 +307,6 @@ public class AngleIdentificationPanel extends JPanel {
             scoreLabel.setText("Score: " + score);
             feedbackLabel.setText("Correct! +" + points + " points. Great job!");
             currentAngleValue = -1;
-            angleDrawingPanel.setAngle(-1);
             angleLabel.setText("");
             showAnglePrompt = false;
             updateAnglePrompt();
@@ -264,7 +317,6 @@ public class AngleIdentificationPanel extends JPanel {
             if (attempts >= 3) {
                 feedbackLabel.setText("Incorrect! The correct answer is: " + correctType);
                 currentAngleValue = -1;
-                angleDrawingPanel.setAngle(-1);
                 angleLabel.setText("");
                 showAnglePrompt = false;
                 updateAnglePrompt();
@@ -280,6 +332,19 @@ public class AngleIdentificationPanel extends JPanel {
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
+    }
+
+    private void updateProgressBar() {
+        for (int i = 0; i < 5; i++) {
+            AngleType t = AngleType.values()[i];
+            if (practicedTypes.contains(t)) {
+                typeLabels[i].setBackground(new Color(120, 220, 120));
+                typeLabels[i].setText(typeLabels[i].getText().split(" ")[0]); // 不加勾
+            } else {
+                typeLabels[i].setBackground(new Color(220, 220, 220));
+                typeLabels[i].setText(typeLabels[i].getText().split(" ")[0]);
+            }
+        }
     }
 }
 
