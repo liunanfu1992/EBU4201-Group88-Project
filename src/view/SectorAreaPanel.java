@@ -121,14 +121,14 @@ public class SectorAreaPanel extends JPanel {
     private void loadQuestionByIndex(int idx) {
         // 题目数据（示例，实际应补全所有题目数据）
         String[] imgPaths = {
-            "src/resources/images/task6/Shape 1.jpg",
-            "src/resources/images/task6/Shape 2.jpg",
-            "src/resources/images/task6/Shape 3.jpg",
-            "src/resources/images/task6/Shape 4.jpg",
-            "src/resources/images/task6/Shape 5.jpg",
-            "src/resources/images/task6/Shape 6.jpg",
-            "src/resources/images/task6/Shape 7.jpg",
-            "src/resources/images/task6/Shape 8.jpg"
+            "resources/images/task6/Shape 1.jpg",
+            "resources/images/task6/Shape 2.jpg",
+            "resources/images/task6/Shape 3.jpg",
+            "resources/images/task6/Shape 4.jpg",
+            "resources/images/task6/Shape 5.jpg",
+            "resources/images/task6/Shape 6.jpg",
+            "resources/images/task6/Shape 7.jpg",
+            "resources/images/task6/Shape 8.jpg"
         };
         String[] questions = {
             "Sector: radius = 8 cm, angle = 90°. What is the area? (Use π ≈ 3.14)",
@@ -202,7 +202,7 @@ public class SectorAreaPanel extends JPanel {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
         // 保留题目原图，在下方展示答案图片
-        String answerImgPath = String.format("src/resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
+        String answerImgPath = String.format("resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
         int targetWidth = 400;
         int imgW = answerIcon.getIconWidth();

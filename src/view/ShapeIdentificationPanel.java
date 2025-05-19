@@ -112,7 +112,7 @@ public class ShapeIdentificationPanel extends JPanel {
                 if (i < words.length - 1) sb.append(" ");
             }
             String imageName = sb.toString();
-            String filePath = "src/resources/images/task1/" + (is2DMode ? "2DShapes/" : "3DShapes/") + imageName + ".png";
+            String filePath = "resources/images/task1/" + (is2DMode ? "2DShapes/" : "3DShapes/") + imageName + ".png";
             try {
                 ImageIcon icon = new ImageIcon(filePath); // 直接用本地文件路径
                 if (icon.getIconWidth() == -1) {

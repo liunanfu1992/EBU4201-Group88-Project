@@ -131,12 +131,12 @@ public class CompoundShapePanel extends JPanel {
     private void loadQuestionByIndex(int idx) {
         // 只保留剩余6题
         String[] imgPaths = {
-            "src/resources/images/task5/Shape 2.jpg", // 原索引1
-            "src/resources/images/task5/Shape 3.jpg", // 原索引2
-            "src/resources/images/task5/Shape 4.jpg", // 原索引3
-            "src/resources/images/task5/Shape 5.jpg", // 原索引4
-            "src/resources/images/task5/Shape 8.jpg", // 原索引7
-            "src/resources/images/task5/Shape 9.jpg"  // 原索引8
+            "resources/images/task5/Shape 2.jpg", // 原索引1
+            "resources/images/task5/Shape 3.jpg", // 原索引2
+            "resources/images/task5/Shape 4.jpg", // 原索引3
+            "resources/images/task5/Shape 5.jpg", // 原索引4
+            "resources/images/task5/Shape 8.jpg", // 原索引7
+            "resources/images/task5/Shape 9.jpg"  // 原索引8
         };
         String[] questions = {
             "Calculate the area of this compound shape (split as shown).",
@@ -206,7 +206,7 @@ public class CompoundShapePanel extends JPanel {
         submitButton.setEnabled(false);
         // 展示答案图片
         int[] validIdx = {1, 2, 3, 4, 7, 8};
-        String answerImgPath = String.format("src/resources/images/task5/answer/answer%d.jpg", validIdx[shapeIndex] + 1);
+        String answerImgPath = String.format("resources/images/task5/answer/answer%d.jpg", validIdx[shapeIndex] + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
         int targetWidth = 320;
         int imgW = answerIcon.getIconWidth();
