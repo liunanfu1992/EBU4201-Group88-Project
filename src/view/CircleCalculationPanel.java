@@ -1,8 +1,9 @@
+// This panel allows users to calculate the area and circumference of circles.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Random;
@@ -10,21 +11,36 @@ import src.model.ScoreManager;
 import src.model.ScoringUtil;
 
 public class CircleCalculationPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Labels for displaying various information
     private JLabel titleLabel, progressLabel, questionLabel, timerLabel, feedbackLabel, formulaLabel, calcLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Buttons for different actions
     private JButton submitButton, homeButton, areaButton, circButton, nextButton;
+    // Panels for organizing the UI components
     private JPanel mainPanel, questionPanel, explainPanel, buttonPanel;
+    // Timer for tracking question time limit
     private Timer timer;
+    // Time remaining in seconds
     private int timeLeft = 180;
+    // Flag indicating whether calculating area (true) or circumference (false)
     private boolean isArea = true;
+    // Flag indicating whether using radius (true) or diameter (false)
     private boolean isRadius = true;
+    // Circle parameters
     private int radius = 0, diameter = 0;
+    // Correct answer for the current question
     private double correctAnswer = 0;
+    // Number of attempts for current question
     private int attempts = 0;
-    private static Set<String> finished = new HashSet<>(); // 记录已完成的四种组合
+    // Set to track completed question types
+    private static Set<String> finished = new HashSet<>(); 
+    // Coefficient for calculating the correct answer
     private int correctCoeff = 0;
 
+    // Constructor, initializes the panel and its components
     public CircleCalculationPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -38,7 +54,7 @@ public class CircleCalculationPanel extends JPanel {
         showMainMenu();
     }
 
-
+    // Shows the main menu with options to calculate area or circumference
     private void showMainMenu() {
         removeCenter();
         removeSouthPanel();
@@ -52,7 +68,6 @@ public class CircleCalculationPanel extends JPanel {
         mainPanel.add(prompt);
         mainPanel.add(Box.createVerticalStrut(30));
 
-        // 加载图片icon
         ImageIcon areaIcon = new ImageIcon("src/resources/images/task4/area.png");
         ImageIcon circIcon = new ImageIcon("src/resources/images/task4/circumference.png");
         int iconMaxDim = 280;
@@ -62,18 +77,17 @@ public class CircleCalculationPanel extends JPanel {
         areaButton = new JButton("Area", areaIcon);
         StyleUtil.styleButton(areaButton, StyleUtil.MAIN_GREEN, Color.BLACK);
         areaButton.setFont(StyleUtil.BIG_FONT);
-        areaButton.setPreferredSize(new Dimension(300, 300));
+        areaButton.setPreferredSize(new Dimension(290, 320));
         areaButton.setHorizontalTextPosition(SwingConstants.CENTER);
         areaButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         circButton = new JButton("Circumference", circIcon);
         StyleUtil.styleButton(circButton, StyleUtil.MAIN_GREEN, Color.BLACK);
         circButton.setFont(StyleUtil.BIG_FONT);
-        circButton.setPreferredSize(new Dimension(300, 300));
+        circButton.setPreferredSize(new Dimension(290, 320));
         circButton.setHorizontalTextPosition(SwingConstants.CENTER);
         circButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
-        // 判断是否已完成，已完成则禁用并标记
         if (finished.contains("area-radius") && finished.contains("area-diameter")) {
             areaButton.setEnabled(false);
             areaButton.setText("Area (Completed)");
@@ -94,7 +108,6 @@ public class CircleCalculationPanel extends JPanel {
         mainPanel.add(buttonPanel);
 
 
-        // 主菜单底部只保留Home按钮
         JButton homeBtn = new JButton("Home");
         StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
         homeBtn.setFont(StyleUtil.NORMAL_FONT);
@@ -112,13 +125,13 @@ public class CircleCalculationPanel extends JPanel {
         circButton.addActionListener(e -> startQuestion(false));
     }
 
+    // Shows the question panel with the current question
     private void showQuestionPanel() {
         removeCenter();
         questionPanel = new JPanel();
         questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
         questionPanel.setBorder(BorderFactory.createEmptyBorder(30, 80, 30, 80));
         StyleUtil.stylePanel(questionPanel);
-        // 随机生成参数
         Random rand = new Random();
         if (isRadius) {
             radius = rand.nextInt(20) + 1;
@@ -127,7 +140,6 @@ public class CircleCalculationPanel extends JPanel {
             diameter = (rand.nextInt(10) + 1) * 2; // 2, 4, ..., 20
             radius = diameter / 2;
         }
-        // 题干
         String paramStr = isRadius ? ("radius = " + radius) : ("diameter = " + diameter);
         String what = isArea ? "area" : "circumference";
         questionLabel = new JLabel("Given " + paramStr + ", please calculate the " + what + " of the circle.", SwingConstants.CENTER);
@@ -135,7 +147,6 @@ public class CircleCalculationPanel extends JPanel {
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(questionLabel);
         questionPanel.add(Box.createVerticalStrut(20));
-        // 输入区
         JPanel inputPanel = new JPanel();
         StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -156,24 +167,19 @@ public class CircleCalculationPanel extends JPanel {
         inputPanel.add(piLabel);
         inputPanel.add(submitButton);
         questionPanel.add(inputPanel);
-        // 倒计时
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
         StyleUtil.styleLabel(timerLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(timerLabel);
-        // 反馈
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(feedbackLabel);
         add(questionPanel, BorderLayout.CENTER);
-        // 底部按钮
         addQuestionBottomBar();
         revalidate(); repaint();
-        // 计时
         timeLeft = 180;
         attempts = 0;
-        // 计算正确答案的系数
         if (isArea) {
             correctCoeff = isRadius ? (radius * radius) : ((diameter / 2) * (diameter / 2));
         } else {
@@ -184,8 +190,8 @@ public class CircleCalculationPanel extends JPanel {
         submitButton.addActionListener(e -> checkAnswer());
     }
 
+    // Adds the bottom bar with navigation buttons
     private void addQuestionBottomBar() {
-        // 先移除原有底部
         removeSouthPanel();
         JButton homeBtn = new JButton("Home");
         StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
@@ -207,9 +213,9 @@ public class CircleCalculationPanel extends JPanel {
         });
     }
 
+    // Starts a new question based on the selected type (area or circumference)
     private void startQuestion(boolean area) {
         isArea = area;
-        // 随机分配未完成的参数类型
         String keyRadius = (isArea ? "area-radius" : "circ-radius");
         String keyDiameter = (isArea ? "area-diameter" : "circ-diameter");
         if (!finished.contains(keyRadius) && !finished.contains(keyDiameter)) {
@@ -219,13 +225,13 @@ public class CircleCalculationPanel extends JPanel {
         } else if (!finished.contains(keyDiameter)) {
             isRadius = false;
         } else {
-            // 该类型已全部完成
             showMainMenu();
             return;
         }
         showQuestionPanel();
     }
 
+    // Updates the timer display and handles timeout
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -235,6 +241,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Checks the user's answer and provides feedback
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -260,14 +267,13 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Shows the solution with explanation
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
-        // 只有答对才算完成
         String key = (isArea ? "area-" : "circ-") + (isRadius ? "radius" : "diameter");
         if (correct) {
             finished.add(key);
-            // 只要答对一次，Area或Circumference都算完成
             if (isArea) {
                 finished.add("area-radius");
                 finished.add("area-diameter");
@@ -276,14 +282,12 @@ public class CircleCalculationPanel extends JPanel {
                 finished.add("circ-diameter");
             }
         }
-        // 展示讲解区
         removeCenter();
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         explainPanel.setBorder(BorderFactory.createEmptyBorder(30, 80, 30, 80));
         StyleUtil.stylePanel(explainPanel);
         explainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // 反馈
         feedbackLabel = new JLabel(correct ? ("Correct! " + (isArea ? "Area" : "Circumference") + " = " + correctCoeff + "π")
                 : (timeout ? "Time's up! The correct answer is: " + correctCoeff + "π"
                 : "Incorrect! The correct answer is: " + correctCoeff + "π"), SwingConstants.CENTER);
@@ -291,19 +295,16 @@ public class CircleCalculationPanel extends JPanel {
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(feedbackLabel);
         explainPanel.add(Box.createVerticalStrut(10));
-        // 公式
         String formula = isArea ? "A = π × r²" : (isRadius ? "C = 2 × π × r" : "C = π × d");
         formulaLabel = new JLabel("Formula: " + formula, SwingConstants.CENTER);
         StyleUtil.styleLabel(formulaLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         formulaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(formulaLabel);
         explainPanel.add(Box.createVerticalStrut(10));
-        // 图形
         CircleDrawingPanel drawingPanel = new CircleDrawingPanel(radius, diameter, isRadius);
         drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(drawingPanel);
         explainPanel.add(Box.createVerticalStrut(10));
-        // 带入
         String calc;
         if (isArea) {
             calc = isRadius ?
@@ -323,6 +324,7 @@ public class CircleCalculationPanel extends JPanel {
         revalidate(); repaint();
     }
 
+    // Shows the completion message
     private void showComplete() {
         removeCenter();
         JPanel donePanel = new JPanel();
@@ -347,6 +349,7 @@ public class CircleCalculationPanel extends JPanel {
         });
     }
 
+    // Removes the center panel
     private void removeCenter() {
         if (mainPanel != null) remove(mainPanel);
         if (questionPanel != null) remove(questionPanel);
@@ -354,10 +357,14 @@ public class CircleCalculationPanel extends JPanel {
         revalidate(); repaint();
     }
 
-    // 圆形绘图面板
+    // Inner class for drawing circles with measurements
     static class CircleDrawingPanel extends JPanel {
+        // Circle parameters
         private int radius, diameter;
+        // Flag indicating whether to show radius (true) or diameter (false)
         private boolean showRadius;
+
+        // Constructor for the drawing panel
         public CircleDrawingPanel(int r, int d, boolean showRadius) {
             this.radius = r;
             this.diameter = d;
@@ -365,6 +372,8 @@ public class CircleCalculationPanel extends JPanel {
             setPreferredSize(new Dimension(200, 200));
             StyleUtil.stylePanel(this);
         }
+
+        // Paints the circle with measurements
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -392,7 +401,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
-    // 等比例缩放图片，最大边为maxDim
+    // Scales an icon proportionally to fit within maximum dimensions
     private ImageIcon scaleIconProportionally(ImageIcon icon, int maxDim) {
         int w = icon.getIconWidth();
         int h = icon.getIconHeight();
@@ -403,9 +412,8 @@ public class CircleCalculationPanel extends JPanel {
         return new ImageIcon(img);
     }
 
-    // 移除BorderLayout.SOUTH已有组件
+    // Removes the south panel
     private void removeSouthPanel() {
-        // BorderLayout.SOUTH只能有一个组件，遍历移除
         for (Component comp : getComponents()) {
             Object cons = getLayout() instanceof BorderLayout ? ((BorderLayout)getLayout()).getConstraints(comp) : null;
             if (cons != null && cons.equals(BorderLayout.SOUTH)) {
@@ -415,6 +423,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Checks if all question types are completed
     public static boolean isAllCompleted() {
         return finished.contains("area-radius") && finished.contains("area-diameter") && finished.contains("circ-radius") && finished.contains("circ-diameter");
     }

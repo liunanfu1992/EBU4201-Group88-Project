@@ -1,9 +1,13 @@
 package src.model;
 
+/**
+ * Enum representing different types of angles.
+ * This enum is used to categorize angles into types such as acute, obtuse, right, straight, and reflex.
+ */
 public enum AngleType {
-    ACUTE,      // less than 90° and greater than 0°
-    OBTUSE,     // less than 180° and greater than 90°
-    RIGHT,      // equal to 90°
-    STRAIGHT,   // equal to 180°
-    REFLEX      // greater than 180° and less than 360°
+    ACUTE,      
+    OBTUSE,     
+    RIGHT,     
+    STRAIGHT,   
+    REFLEX      
 } 

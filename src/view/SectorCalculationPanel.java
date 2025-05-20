@@ -20,7 +20,7 @@ public class SectorCalculationPanel extends JPanel {
     private JLabel scoreLabel;
     private JLabel imageLabel;
 
-    // 当前题目参数
+    // Current question parameters
     private double radius;
     private double angle;
     private boolean isAreaQuestion;
@@ -31,12 +31,12 @@ public class SectorCalculationPanel extends JPanel {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
 
-        // 顶部分数
+        // Top score panel
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(scoreLabel, BorderLayout.NORTH);
 
-        // 中间题目
+        // Main question area
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         imageLabel = new JLabel("", SwingConstants.CENTER);
@@ -60,13 +60,13 @@ public class SectorCalculationPanel extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部Home按钮
+        // Bottom Home button
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
+        // Event bindings
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -109,7 +109,7 @@ public class SectorCalculationPanel extends JPanel {
         feedbackLabel.setText(" ");
         attempts = 0;
 
-        // 加载扇形图片
+        // Load sector image
         String absPath = "src/resources/images/task6/Sector.png";
         ImageIcon icon = null;
         try {
@@ -140,7 +140,7 @@ public class SectorCalculationPanel extends JPanel {
         boolean correct = false;
         try {
             double ans = Double.parseDouble(userAnswer);
-            correct = Math.abs(ans - correctAnswer) < 0.05 * correctAnswer; // 5% 容差
+            correct = Math.abs(ans - correctAnswer) < 0.05 * correctAnswer; // 5% tolerance
         } catch (Exception e) {
             // ignore parse error
         }

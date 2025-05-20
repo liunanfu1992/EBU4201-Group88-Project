@@ -24,12 +24,12 @@ public class CompoundShapePanel extends JPanel {
     private JLabel feedbackLabel;
     private JLabel scoreLabel;
     private JLabel imageLabel;
-    private JLabel answerImageLabel; // 新增成员变量
+    private JLabel answerImageLabel; 
 
     private double correctAnswer;
     private String breakdown;
 
-    private final boolean isAdvanced = true; // 复合图形为高级题型
+    private final boolean isAdvanced = true; 
 
     public CompoundShapePanel(JFrame frame, int shapeIndex, boolean[] completed) {
         this.parentFrame = frame;
@@ -38,7 +38,6 @@ public class CompoundShapePanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
 
-        // 顶部计时和分数区
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 300s", SwingConstants.CENTER);
@@ -49,7 +48,6 @@ public class CompoundShapePanel extends JPanel {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
@@ -65,7 +63,6 @@ public class CompoundShapePanel extends JPanel {
         centerPanel.add(questionLabel);
         centerPanel.add(Box.createVerticalStrut(10));
 
-        // 输入区
         JPanel inputPanel = new JPanel();
         StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -87,7 +84,6 @@ public class CompoundShapePanel extends JPanel {
         centerPanel.add(inputPanel);
         centerPanel.add(Box.createVerticalStrut(10));
 
-        // 反馈区
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -99,14 +95,12 @@ public class CompoundShapePanel extends JPanel {
         feedbackPanel.add(Box.createHorizontalGlue());
         centerPanel.add(feedbackPanel);
 
-        // 答案图片区（成员变量）
         answerImageLabel = new JLabel("");
         answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(answerImageLabel);
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部按钮
         homeButton = new JButton("Home");
         StyleUtil.styleButton(homeButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         homeButton.setFont(StyleUtil.NORMAL_FONT);
@@ -124,7 +118,6 @@ public class CompoundShapePanel extends JPanel {
         bottomPanel.add(Box.createHorizontalGlue());
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -159,14 +152,13 @@ public class CompoundShapePanel extends JPanel {
     }
 
     private void loadQuestionByIndex(int idx) {
-        // 只保留剩余6题
         String[] imgPaths = {
-            "src/resources/images/task5/Shape 2.jpg", // 原索引1
-            "src/resources/images/task5/Shape 3.jpg", // 原索引2
-            "src/resources/images/task5/Shape 4.jpg", // 原索引3
-            "src/resources/images/task5/Shape 5.jpg", // 原索引4
-            "src/resources/images/task5/Shape 8.jpg", // 原索引7
-            "src/resources/images/task5/Shape 9.jpg"  // 原索引8
+            "src/resources/images/task5/Shape 2.jpg", 
+            "src/resources/images/task5/Shape 3.jpg", 
+            "src/resources/images/task5/Shape 4.jpg", 
+            "src/resources/images/task5/Shape 5.jpg", 
+            "src/resources/images/task5/Shape 8.jpg", 
+            "src/resources/images/task5/Shape 9.jpg" 
         };
         String[] questions = {
             "Calculate the area of this compound shape (split as shown).",
@@ -199,7 +191,7 @@ public class CompoundShapePanel extends JPanel {
         breakdown = breakdowns[idx];
         answerField.setText("");
         feedbackLabel.setText(" ");
-        answerImageLabel.setIcon(null); // 清空上一次的答案图片
+        answerImageLabel.setIcon(null); 
         attempts = 0;
         submitButton.setEnabled(true);
         answerField.setEnabled(true);
@@ -211,12 +203,10 @@ public class CompoundShapePanel extends JPanel {
         boolean correct = false;
         try {
             double ans = Double.parseDouble(userAnswer);
-            // 保留两位小数进行比较
             double ans2 = Math.round(ans * 100.0) / 100.0;
             double correct2 = Math.round(correctAnswer * 100.0) / 100.0;
             correct = Math.abs(ans2 - correct2) < 0.05 * correct2;
         } catch (Exception e) {
-            // ignore parse error
         }
         if (correct) {
             timer.stop();
@@ -240,7 +230,6 @@ public class CompoundShapePanel extends JPanel {
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
-        // 展示答案图片
         int[] validIdx = {1, 2, 3, 4, 7, 8};
         String answerImgPath = String.format("src/resources/images/task5/answer/answer%d.jpg", validIdx[shapeIndex] + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
@@ -255,7 +244,6 @@ public class CompoundShapePanel extends JPanel {
             answerImageLabel.setVisible(true);
         }
         feedbackLabel.setText(correct ? "Correct! Well done!" : "Incorrect, here is the answer.");
-        // 不再自动跳转，由用户点击按钮决定下一步
     }
 
     private void goBackToSelection() {

@@ -21,14 +21,14 @@ public class SectorAreaPanel extends JPanel {
     private JButton homeButton;
     private JLabel feedbackLabel;
     private JLabel imageLabel;
-    private JLabel answerImageLabel; // 新增成员变量
+    private JLabel answerImageLabel;
 
-    // 题目数据
+    // Question data
     private double correctAnswer;
     private String breakdown;
 
-    private int score = 0; // 总分
-    private final boolean isAdvanced = true; // 扇形为高级题型
+    private int score = 0;
+    private final boolean isAdvanced = true;
 
     public SectorAreaPanel(JFrame frame, int sectorIndex, boolean[] completed) {
         this.parentFrame = frame;
@@ -37,7 +37,7 @@ public class SectorAreaPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
 
-        // 顶部计时和分数区
+        // Top timer and score area
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 300s", SwingConstants.CENTER);
@@ -48,7 +48,7 @@ public class SectorAreaPanel extends JPanel {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中间内容
+        // Middle content
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
@@ -67,7 +67,7 @@ public class SectorAreaPanel extends JPanel {
         centerPanel.add(questionLabel);
         centerPanel.add(Box.createVerticalStrut(10));
 
-        // 输入区
+        // Input area
         JPanel inputPanel = new JPanel();
         StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -89,7 +89,7 @@ public class SectorAreaPanel extends JPanel {
         centerPanel.add(inputPanel);
         centerPanel.add(Box.createVerticalStrut(10));
 
-        // 反馈区
+        // Feedback area
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -102,7 +102,7 @@ public class SectorAreaPanel extends JPanel {
         centerPanel.add(feedbackPanel);
         centerPanel.add(Box.createVerticalStrut(10));
 
-        // 答案图片区
+        // Answer image area
         answerImageLabel = new JLabel("");
         answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         answerImageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
@@ -110,7 +110,7 @@ public class SectorAreaPanel extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部按钮
+        // Bottom buttons
         homeButton = new JButton("Home");
         StyleUtil.styleButton(homeButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         homeButton.setFont(StyleUtil.NORMAL_FONT);
@@ -128,7 +128,7 @@ public class SectorAreaPanel extends JPanel {
         bottomPanel.add(Box.createHorizontalGlue());
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
+        // Event binding
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -163,7 +163,7 @@ public class SectorAreaPanel extends JPanel {
     }
 
     private void loadQuestionByIndex(int idx) {
-        // 题目数据（示例，实际应补全所有题目数据）
+        // Question data (example, should be completed with all question data)
         String[] imgPaths = {
             "resources/images/task6/Shape 1.jpg",
             "resources/images/task6/Shape 2.jpg",
@@ -187,7 +187,6 @@ public class SectorAreaPanel extends JPanel {
         double[] radii = {8, 18, 19, 22, 3.5, 8, 12, 15};
         double[] angles = {90, 130, 240, 110, 100, 270, 280, 250};
         String[] units = {"cm", "ft", "cm", "ft", "in", "in", "yd", "mm"};
-        // 计算正确答案
         double[] answers = new double[8];
         String[] breakdowns = new String[8];
         for (int i = 0; i < 8; i++) {
@@ -202,7 +201,7 @@ public class SectorAreaPanel extends JPanel {
         breakdown = breakdowns[idx];
         answerField.setText("");
         feedbackLabel.setText(" ");
-        answerImageLabel.setIcon(null); // 清空上一次的答案图片
+        answerImageLabel.setIcon(null);
         attempts = 0;
         submitButton.setEnabled(true);
         answerField.setEnabled(true);
@@ -225,7 +224,6 @@ public class SectorAreaPanel extends JPanel {
             score += points;
             ScoreManager.getInstance().addScore(points);
             feedbackLabel.setText("Correct! +" + points + " points. Great job!");
-            // 实时显示总分
             timerLabel.setText("Score: " + score);
             showSolution(true, false);
         } else {
@@ -241,7 +239,6 @@ public class SectorAreaPanel extends JPanel {
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
-        // 保留题目原图，在下方展示答案图片
         String answerImgPath = String.format("src/resources/images/task6/answer/answer%d.jpg", sectorIndex + 1);
         ImageIcon answerIcon = new ImageIcon(answerImgPath);
         int targetWidth = 400;
@@ -255,7 +252,6 @@ public class SectorAreaPanel extends JPanel {
             answerImageLabel.setVisible(true);
         }
         feedbackLabel.setText(correct ? "Correct! Well done!" : "Incorrect, here is the answer.");
-        // 不再自动跳转，由用户点击按钮决定下一步
     }
 
     private void goBackToSelection() {

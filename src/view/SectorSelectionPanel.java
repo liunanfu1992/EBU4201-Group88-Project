@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class SectorSelectionPanel extends JPanel {
     private JFrame parentFrame;
-    private static boolean[] completed = new boolean[8]; // 记录每题是否完成
+    private static boolean[] completed = new boolean[8]; // Track completion status of each question
     private JButton[] sectorButtons = new JButton[8];
     private JProgressBar progressBar;
 
@@ -16,7 +16,7 @@ public class SectorSelectionPanel extends JPanel {
         }
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
-        // 标题
+        // Title
         JLabel title = new JLabel("Sector Area Challenge", SwingConstants.CENTER);
         StyleUtil.styleLabel(title, StyleUtil.BIG_FONT, StyleUtil.MAIN_PURPLE);
         title.setOpaque(true);
@@ -56,7 +56,7 @@ public class SectorSelectionPanel extends JPanel {
         gridPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
         add(gridPanel, BorderLayout.CENTER);
 
-        // 美化进度条
+        // Style progress bar
         int done = 0;
         for (int i = 0; i < 8; i++) if (completed[i]) done++;
         progressBar = new JProgressBar(0, 8);
@@ -73,7 +73,7 @@ public class SectorSelectionPanel extends JPanel {
         progressPanel.add(progressBar, BorderLayout.CENTER);
         add(progressPanel, BorderLayout.SOUTH);
 
-        // Home按钮美化
+        // Style Home button
         JButton homeBtn = new JButton("Home");
         StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
         homeBtn.setFont(StyleUtil.NORMAL_FONT);

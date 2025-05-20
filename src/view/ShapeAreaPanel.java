@@ -1,3 +1,5 @@
+// This panel serves as the main interface for shape area calculation exercises.
+// It provides a selection of different shapes and tracks user progress.
 package src.view;
 
 import javax.swing.*;
@@ -6,7 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ShapeAreaPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Set to track completed shapes
     private static Set<String> completedShapes = new HashSet<>();
 
     public ShapeAreaPanel(JFrame frame) {
@@ -14,7 +18,7 @@ public class ShapeAreaPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
 
-        // 标题
+        // Title
         JLabel titleLabel = new JLabel("Area Calculation of Shapes", SwingConstants.CENTER);
         StyleUtil.styleLabel(titleLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         titleLabel.setOpaque(true);
@@ -22,18 +26,18 @@ public class ShapeAreaPanel extends JPanel {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         add(titleLabel, BorderLayout.NORTH);
 
-        // 图形选择区
+        // Shape selection area
         JPanel shapeSelectPanel = new JPanel();
         shapeSelectPanel.setLayout(new GridLayout(2, 2, 30, 30));
         shapeSelectPanel.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
         StyleUtil.stylePanel(shapeSelectPanel);
 
-        // 加载图片
+        // Load images
         ImageIcon rectIcon = new ImageIcon("src/resources/images/task3/RECTANGLE.png");
         ImageIcon paraIcon = new ImageIcon("src/resources/images/task3/PARALLELOGRAM.png");
         ImageIcon triIcon = new ImageIcon("src/resources/images/task3/TRANGLE.png");
         ImageIcon trapIcon = new ImageIcon("src/resources/images/task3/TRAPEZNM.png");
-        // 缩放图片
+        // Scale images
         int maxDim = 180;
         rectIcon = scaleIconProportionally(rectIcon, maxDim);
         paraIcon = scaleIconProportionally(paraIcon, maxDim);
@@ -64,7 +68,7 @@ public class ShapeAreaPanel extends JPanel {
                 btns[i].setForeground(Color.GRAY);
             }
         }
-        // 事件
+        // Event handlers
         rectBtn.addActionListener(e -> {
             parentFrame.setContentPane(new RectangleAreaQuestionPanel(parentFrame));
             parentFrame.revalidate();
@@ -87,7 +91,7 @@ public class ShapeAreaPanel extends JPanel {
         shapeSelectPanel.add(trapBtn);
         add(shapeSelectPanel, BorderLayout.CENTER);
 
-        // Home按钮
+        // Home button
         JButton homeBtn = new JButton("Home");
         StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
         homeBtn.setFont(StyleUtil.NORMAL_FONT);
@@ -101,15 +105,17 @@ public class ShapeAreaPanel extends JPanel {
         add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    // Marks a shape as completed in the progress tracking
     public static void markShapeAsCompleted(String shapeType) {
         completedShapes.add(shapeType);
     }
 
+    // Checks if all shapes have been completed
     public static boolean isAllCompleted() {
         return completedShapes.contains("Rectangle") && completedShapes.contains("Parallelogram") && completedShapes.contains("Triangle") && completedShapes.contains("Trapezium");
     }
 
-    // 等比例缩放图片，最大边为maxDim
+    // Scale image proportionally with maximum dimension
     private ImageIcon scaleIconProportionally(ImageIcon icon, int maxDim) {
         int w = icon.getIconWidth();
         int h = icon.getIconHeight();

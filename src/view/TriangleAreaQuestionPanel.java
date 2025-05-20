@@ -1,35 +1,50 @@
+// This panel allows users to calculate the area of triangles.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import src.model.ScoringUtil;
 import src.model.ScoreManager;
 
 public class TriangleAreaQuestionPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Parameters for the triangle
     private int base, height, correctArea, attempts = 0;
+    // Labels for displaying various information
     private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Buttons for different actions
     private JButton submitButton, nextButton, homeButton;
+    // Timer for tracking question time limit
     private Timer timer;
+    // Time remaining in seconds
     private int timeLeft = 180;
+    // Panel for displaying explanation
     private JPanel explainPanel;
+    // Labels for formula and calculation
     private JLabel formulaLabel, calcLabel;
+    // Panel for drawing the triangle
     private TriangleDrawingPanel drawingPanel;
-    private int score = 0; // 总分
-    private final boolean isAdvanced = false; // 普通图形为基础题型
+    // Total score
+    private int score = 0;
+    // Flag indicating whether this is an advanced question
+    private final boolean isAdvanced = false;
 
+    // Constructor, initializes the panel and its components
     public TriangleAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
 
+        // Generate random parameters
         base = 1 + (int)(Math.random() * 20);
         height = 1 + (int)(Math.random() * 20);
         correctArea = (int)(0.5 * base * height);
 
-        // 顶部计时和分数
+        // Top panel for timer and score
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
@@ -40,18 +55,20 @@ public class TriangleAreaQuestionPanel extends JPanel {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中间内容
+        // Main content panel
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
         centerPanel.add(Box.createVerticalStrut(10));
 
+        // Question area
         questionLabel = new JLabel("The base of the triangle is " + base + ", the height is " + height + ". Please calculate its area.", SwingConstants.CENTER);
         StyleUtil.styleLabel(questionLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
         centerPanel.add(Box.createVerticalStrut(20));
 
+        // Input area
         JPanel inputPanel = new JPanel();
         StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -72,12 +89,13 @@ public class TriangleAreaQuestionPanel extends JPanel {
         inputPanel.add(submitButton);
         centerPanel.add(inputPanel);
 
+        // Feedback area
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
 
-        // 公式与图形区
+        // Formula and drawing area
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(explainPanel);
@@ -100,7 +118,7 @@ public class TriangleAreaQuestionPanel extends JPanel {
         centerPanel.add(explainPanel);
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部按钮
+        // Bottom buttons
         nextButton = new JButton("Back to Selection");
         StyleUtil.styleButton(nextButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         nextButton.setEnabled(true);
@@ -112,14 +130,17 @@ public class TriangleAreaQuestionPanel extends JPanel {
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
+        // Event bindings
         submitButton.addActionListener(e -> checkAnswer());
         nextButton.addActionListener(e -> goNext());
         homeButton.addActionListener(e -> goHome());
 
+        // Start countdown timer
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
     }
 
+    // Updates the timer display and handles timeout
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -129,6 +150,7 @@ public class TriangleAreaQuestionPanel extends JPanel {
         }
     }
 
+    // Checks the user's answer and provides feedback
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -158,6 +180,7 @@ public class TriangleAreaQuestionPanel extends JPanel {
         }
     }
 
+    // Shows the solution with explanation
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
@@ -172,24 +195,32 @@ public class TriangleAreaQuestionPanel extends JPanel {
         }
     }
 
+    // Returns to the shape selection panel
     private void goNext() {
         parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
         parentFrame.revalidate();
     }
 
+    // Returns to the main menu
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
 
+    // Inner class for drawing triangles with measurements
     static class TriangleDrawingPanel extends JPanel {
+        // Parameters for the triangle
         private int base, height;
+
+        // Constructor for the drawing panel
         public TriangleDrawingPanel(int b, int h) {
             this.base = b;
             this.height = h;
             setPreferredSize(new Dimension(320, 160));
             StyleUtil.stylePanel(this);
         }
+
+        // Paints the triangle with measurements
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
