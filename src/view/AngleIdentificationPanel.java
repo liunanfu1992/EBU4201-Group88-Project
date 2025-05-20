@@ -69,7 +69,11 @@ public class AngleIdentificationPanel extends JPanel {
         typeLabels = new JLabel[5];
         for (int i = 0; i < 5; i++) {
             typeLabels[i] = new JLabel(typeNames[i]);
-            typeLabels[i].setFont(StyleUtil.BIG_FONT);
+            if (i == 3) { // 第4个是Straight
+                typeLabels[i].setFont(new Font("Comic Sans MS", Font.BOLD, 21)); // 用较小字号
+            } else {
+                typeLabels[i].setFont(StyleUtil.BIG_FONT);
+            }
             typeLabels[i].setOpaque(true);
             typeLabels[i].setBackground(new Color(220, 220, 220));
             typeLabels[i].setBorder(BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 2, true));
@@ -104,7 +108,10 @@ public class AngleIdentificationPanel extends JPanel {
         angleInputPanel.setLayout(new BoxLayout(angleInputPanel, BoxLayout.X_AXIS));
         StyleUtil.stylePanel(angleInputPanel);
         angleInputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        angleInputPanel.add(new JLabel("Enter an angle (from 0 to 360, excluding 0 and 360, multiple of 10): "));
+        // 美化输入提示字体
+        JLabel angleInputTip = new JLabel("Enter an angle (from 0 to 360, excluding 0 and 360, multiple of 10): ");
+        StyleUtil.styleLabel(angleInputTip, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
+        angleInputPanel.add(angleInputTip);
         angleInputPanel.add(angleInputField);
         angleInputPanel.add(angleInputButton);
         centerPanel.add(Box.createVerticalStrut(5));
@@ -376,6 +383,11 @@ public class AngleIdentificationPanel extends JPanel {
 // 角度绘图面板
 class AngleDrawingPanel extends JPanel {
     private int angle = -1;
+
+    public AngleDrawingPanel() {
+        setBackground(StyleUtil.BG_COLOR);
+    }
+
     public void setAngle(int angle) {
         this.angle = angle;
         repaint();
