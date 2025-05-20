@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 import src.model.ScoringUtil;
 import src.model.ScoreManager;
 
@@ -25,11 +24,9 @@ public class CompoundShapePanel extends JPanel {
     private JLabel feedbackLabel;
     private JLabel scoreLabel;
     private JLabel imageLabel;
+    private JLabel answerImageLabel; // 新增成员变量
 
-    // 当前题目参数
-    private double[] params;
     private double correctAnswer;
-    private String formula;
     private String breakdown;
 
     private final boolean isAdvanced = true; // 复合图形为高级题型
@@ -39,56 +36,85 @@ public class CompoundShapePanel extends JPanel {
         this.shapeIndex = shapeIndex;
         this.completed = completed;
         setLayout(new BorderLayout(10, 10));
-        timerLabel = new JLabel("Time left: 300s", SwingConstants.CENTER);
-        timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(timerLabel, BorderLayout.NORTH);
+        StyleUtil.stylePanel(this);
 
-        // 顶部分数
+        // 顶部计时和分数区
+        JPanel topPanel = new JPanel(new GridLayout(1, 2));
+        StyleUtil.stylePanel(topPanel);
+        timerLabel = new JLabel("Time left: 300s", SwingConstants.CENTER);
+        StyleUtil.styleLabel(timerLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(scoreLabel, BorderLayout.NORTH);
+        StyleUtil.styleLabel(scoreLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
+        topPanel.add(timerLabel);
+        topPanel.add(scoreLabel);
+        add(topPanel, BorderLayout.NORTH);
 
         // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        StyleUtil.stylePanel(centerPanel);
+
         imageLabel = new JLabel("", SwingConstants.CENTER);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imageLabel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
         centerPanel.add(imageLabel);
+
         questionLabel = new JLabel("", SwingConstants.CENTER);
-        questionLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        StyleUtil.styleLabel(questionLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
+        centerPanel.add(Box.createVerticalStrut(10));
 
+        // 输入区
+        JPanel inputPanel = new JPanel();
+        StyleUtil.stylePanel(inputPanel);
+        inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel areaLabel = new JLabel("Area = ");
+        StyleUtil.styleLabel(areaLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         answerField = new JTextField();
         answerField.setMaximumSize(new Dimension(120, 32));
         answerField.setPreferredSize(new Dimension(120, 32));
-        answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(answerField);
-
+        answerField.setFont(StyleUtil.NORMAL_FONT);
+        answerField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 2),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        inputPanel.add(areaLabel);
+        inputPanel.add(answerField);
         submitButton = new JButton("Submit");
-        submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(submitButton);
+        StyleUtil.styleButton(submitButton, StyleUtil.MAIN_GREEN, Color.BLACK);
+        inputPanel.add(submitButton);
+        centerPanel.add(inputPanel);
         centerPanel.add(Box.createVerticalStrut(10));
+
+        // 反馈区
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
-        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         JPanel feedbackPanel = new JPanel();
+        StyleUtil.stylePanel(feedbackPanel);
         feedbackPanel.setLayout(new BoxLayout(feedbackPanel, BoxLayout.X_AXIS));
         feedbackPanel.add(Box.createHorizontalGlue());
         feedbackPanel.add(feedbackLabel);
         feedbackPanel.add(Box.createHorizontalGlue());
         centerPanel.add(feedbackPanel);
-        JLabel answerImageLabel = new JLabel("");
+
+        // 答案图片区（成员变量）
+        answerImageLabel = new JLabel("");
         answerImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(answerImageLabel);
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部Home按钮
+        // 底部按钮
         homeButton = new JButton("Home");
+        StyleUtil.styleButton(homeButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        homeButton.setFont(StyleUtil.NORMAL_FONT);
         JButton backButton = new JButton("Back to Selection");
+        StyleUtil.styleButton(backButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        backButton.setFont(StyleUtil.NORMAL_FONT);
         JPanel bottomPanel = new JPanel();
+        StyleUtil.stylePanel(bottomPanel);
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         bottomPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         bottomPanel.add(Box.createHorizontalGlue());
@@ -173,6 +199,7 @@ public class CompoundShapePanel extends JPanel {
         breakdown = breakdowns[idx];
         answerField.setText("");
         feedbackLabel.setText(" ");
+        answerImageLabel.setIcon(null); // 清空上一次的答案图片
         attempts = 0;
         submitButton.setEnabled(true);
         answerField.setEnabled(true);
@@ -222,29 +249,11 @@ public class CompoundShapePanel extends JPanel {
         int imgH = answerIcon.getIconHeight();
         int targetHeight = (int) (imgH * (targetWidth / (double) imgW));
         Image answerImg = answerIcon.getImage().getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
-        // 找到centerPanel中的answerImageLabel（submit下方的那个）
-        JPanel centerPanel = (JPanel) imageLabel.getParent();
-        JLabel answerImageLabel = null;
-        // 由于插入了feedbackPanel，答案图片label索引需+3
-        int submitIdx = -1;
-        for (int i = 0; i < centerPanel.getComponentCount(); i++) {
-            if (centerPanel.getComponent(i) == submitButton) {
-                submitIdx = i;
-            }
-        }
-        if (submitIdx != -1 && submitIdx + 3 < centerPanel.getComponentCount()) {
-            Component comp = centerPanel.getComponent(submitIdx + 3);
-            if (comp instanceof JLabel) {
-                answerImageLabel = (JLabel) comp;
-            }
-        }
         if (answerImageLabel != null) {
             answerImageLabel.setIcon(new ImageIcon(answerImg));
             answerImageLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
             answerImageLabel.setVisible(true);
         }
-        centerPanel.revalidate();
-        centerPanel.repaint();
         feedbackLabel.setText(correct ? "Correct! Well done!" : "Incorrect, here is the answer.");
         // 不再自动跳转，由用户点击按钮决定下一步
     }
@@ -259,4 +268,4 @@ public class CompoundShapePanel extends JPanel {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
-} 
+}
