@@ -82,27 +82,27 @@ public class RectangleAreaQuestionPanel extends JPanel {
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
 
-        // 图片区
-        drawingPanel = new RectangleDrawingPanel(length, width);
-        drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        drawingPanel.setVisible(false);
-        centerPanel.add(Box.createVerticalStrut(4));
-        centerPanel.add(drawingPanel);
-        centerPanel.add(Box.createVerticalStrut(2));
-
-        // 讲解区
+        // 讲解区（公式在上，图片居中，代入在下）
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(explainPanel);
         explainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         formulaLabel = new JLabel("Formula: A = length × width", SwingConstants.CENTER);
         StyleUtil.styleLabel(formulaLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         formulaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        drawingPanel = new RectangleDrawingPanel(length, width);
+        drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         calcLabel = new JLabel("Substitute: A = " + length + " × " + width + " = " + correctArea, SwingConstants.CENTER);
         StyleUtil.styleLabel(calcLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
         explainPanel.add(formulaLabel);
-        explainPanel.add(Box.createVerticalStrut(2));
+        explainPanel.add(Box.createVerticalStrut(10));
+        explainPanel.add(drawingPanel);
+        explainPanel.add(Box.createVerticalStrut(10));
         explainPanel.add(calcLabel);
         explainPanel.setVisible(false);
         centerPanel.add(explainPanel);
@@ -173,7 +173,6 @@ public class RectangleAreaQuestionPanel extends JPanel {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
         nextButton.setEnabled(true);
-        drawingPanel.setVisible(true);
         explainPanel.setVisible(true);
         if (correct) {
             feedbackLabel.setText("Correct! Area = " + correctArea);
