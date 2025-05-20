@@ -12,16 +12,21 @@ public class ShapeAreaPanel extends JPanel {
     public ShapeAreaPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
+        StyleUtil.stylePanel(this);
 
         // 标题
         JLabel titleLabel = new JLabel("Area Calculation of Shapes", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        StyleUtil.styleLabel(titleLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
+        titleLabel.setOpaque(true);
+        titleLabel.setBackground(StyleUtil.MAIN_YELLOW);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         add(titleLabel, BorderLayout.NORTH);
 
         // 图形选择区
         JPanel shapeSelectPanel = new JPanel();
         shapeSelectPanel.setLayout(new GridLayout(2, 2, 30, 30));
         shapeSelectPanel.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        StyleUtil.stylePanel(shapeSelectPanel);
 
         // 加载图片
         ImageIcon rectIcon = new ImageIcon("src/resources/images/task3/RECTANGLE.png");
@@ -29,7 +34,7 @@ public class ShapeAreaPanel extends JPanel {
         ImageIcon triIcon = new ImageIcon("src/resources/images/task3/TRANGLE.png");
         ImageIcon trapIcon = new ImageIcon("src/resources/images/task3/TRAPEZNM.png");
         // 缩放图片
-        int maxDim = 240;
+        int maxDim = 180;
         rectIcon = scaleIconProportionally(rectIcon, maxDim);
         paraIcon = scaleIconProportionally(paraIcon, maxDim);
         triIcon = scaleIconProportionally(triIcon, maxDim);
@@ -39,54 +44,39 @@ public class ShapeAreaPanel extends JPanel {
         JButton paraBtn = new JButton("Parallelogram", paraIcon);
         JButton triBtn = new JButton("Triangle", triIcon);
         JButton trapBtn = new JButton("Trapezium", trapIcon);
-        rectBtn.setFont(new Font("Arial", Font.PLAIN, 20));
-        paraBtn.setFont(new Font("Arial", Font.PLAIN, 20));
-        triBtn.setFont(new Font("Arial", Font.PLAIN, 20));
-        trapBtn.setFont(new Font("Arial", Font.PLAIN, 20));
-        // 设置图片在文字上方
-        rectBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        rectBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        paraBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        paraBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        triBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        triBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-        trapBtn.setHorizontalTextPosition(SwingConstants.CENTER);
-        trapBtn.setVerticalTextPosition(SwingConstants.BOTTOM);
-
-        // 检查并禁用已完成的按钮
-        if (completedShapes.contains("Rectangle")) {
-            rectBtn.setEnabled(false);
-            rectBtn.setText("Rectangle (Completed)");
+        JButton[] btns = {rectBtn, paraBtn, triBtn, trapBtn};
+        String[] names = {"Rectangle", "Parallelogram", "Triangle", "Trapezium"};
+        for (int i = 0; i < btns.length; i++) {
+            StyleUtil.styleButton(btns[i], StyleUtil.MAIN_GREEN, Color.BLACK);
+            btns[i].setFont(StyleUtil.BIG_FONT);
+            btns[i].setHorizontalTextPosition(SwingConstants.CENTER);
+            btns[i].setVerticalTextPosition(SwingConstants.BOTTOM);
+            btns[i].setBorder(BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 3, true));
+            btns[i].setFocusPainted(false);
+            btns[i].setCursor(new Cursor(Cursor.HAND_CURSOR));
+            btns[i].setPreferredSize(new Dimension(200, 220));
+            btns[i].setBackground(StyleUtil.MAIN_YELLOW);
+            btns[i].setOpaque(true);
+            if (completedShapes.contains(names[i])) {
+                btns[i].setEnabled(false);
+                btns[i].setText(names[i] + " (Completed)");
+                btns[i].setBackground(new Color(220, 220, 220));
+                btns[i].setForeground(Color.GRAY);
+            }
         }
-        if (completedShapes.contains("Parallelogram")) {
-            paraBtn.setEnabled(false);
-            paraBtn.setText("Parallelogram (Completed)");
-        }
-        if (completedShapes.contains("Triangle")) {
-            triBtn.setEnabled(false);
-            triBtn.setText("Triangle (Completed)");
-        }
-        if (completedShapes.contains("Trapezium")) {
-            trapBtn.setEnabled(false);
-            trapBtn.setText("Trapezium (Completed)");
-        }
-
-        // Rectangle按钮事件
+        // 事件
         rectBtn.addActionListener(e -> {
             parentFrame.setContentPane(new RectangleAreaQuestionPanel(parentFrame));
             parentFrame.revalidate();
         });
-        // Parallelogram按钮事件
         paraBtn.addActionListener(e -> {
             parentFrame.setContentPane(new ParallelogramAreaQuestionPanel(parentFrame));
             parentFrame.revalidate();
         });
-        // Triangle按钮事件
         triBtn.addActionListener(e -> {
             parentFrame.setContentPane(new TriangleAreaQuestionPanel(parentFrame));
             parentFrame.revalidate();
         });
-        // Trapezium按钮事件
         trapBtn.addActionListener(e -> {
             parentFrame.setContentPane(new TrapeziumAreaQuestionPanel(parentFrame));
             parentFrame.revalidate();
@@ -99,12 +89,14 @@ public class ShapeAreaPanel extends JPanel {
 
         // Home按钮
         JButton homeBtn = new JButton("Home");
-        homeBtn.setFont(new Font("Arial", Font.PLAIN, 18));
+        StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        homeBtn.setFont(StyleUtil.NORMAL_FONT);
         homeBtn.addActionListener(e -> {
             parentFrame.setContentPane(new MainMenuPanel(parentFrame));
             parentFrame.revalidate();
         });
         JPanel bottomPanel = new JPanel();
+        StyleUtil.stylePanel(bottomPanel);
         bottomPanel.add(homeBtn);
         add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -127,4 +119,4 @@ public class ShapeAreaPanel extends JPanel {
         Image img = icon.getImage().getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
     }
-} 
+}
