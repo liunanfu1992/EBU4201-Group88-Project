@@ -28,19 +28,16 @@ public class CircleCalculationPanel extends JPanel {
     public CircleCalculationPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
+        StyleUtil.stylePanel(this);
         titleLabel = new JLabel("Circle Area & Circumference Calculation", SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        StyleUtil.styleLabel(titleLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_PURPLE);
+        titleLabel.setOpaque(true);
+        titleLabel.setBackground(StyleUtil.MAIN_PINK);
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(8, 16, 8, 16));
         add(titleLabel, BorderLayout.NORTH);
         showMainMenu();
     }
 
-    private String getProgressText() {
-        return String.format("Progress: %s | %s | %s | %s",
-                finished.contains("area-radius") ? "✓ Area-Radius" : "Area-Radius",
-                finished.contains("area-diameter") ? "✓ Area-Diameter" : "Area-Diameter",
-                finished.contains("circ-radius") ? "✓ Circumference-Radius" : "Circumference-Radius",
-                finished.contains("circ-diameter") ? "✓ Circumference-Diameter" : "Circumference-Diameter");
-    }
 
     private void showMainMenu() {
         removeCenter();
@@ -48,8 +45,9 @@ public class CircleCalculationPanel extends JPanel {
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(40, 120, 40, 120));
+        StyleUtil.stylePanel(mainPanel);
         JLabel prompt = new JLabel("Please select what you want to calculate:", SwingConstants.CENTER);
-        prompt.setFont(new Font("Arial", Font.BOLD, 18));
+        StyleUtil.styleLabel(prompt, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         prompt.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(prompt);
         mainPanel.add(Box.createVerticalStrut(30));
@@ -62,36 +60,46 @@ public class CircleCalculationPanel extends JPanel {
         circIcon = scaleIconProportionally(circIcon, iconMaxDim);
 
         areaButton = new JButton("Area", areaIcon);
-        areaButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        StyleUtil.styleButton(areaButton, StyleUtil.MAIN_GREEN, Color.BLACK);
+        areaButton.setFont(StyleUtil.BIG_FONT);
         areaButton.setPreferredSize(new Dimension(300, 300));
         areaButton.setHorizontalTextPosition(SwingConstants.CENTER);
         areaButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+
         circButton = new JButton("Circumference", circIcon);
-        circButton.setFont(new Font("Arial", Font.PLAIN, 24));
+        StyleUtil.styleButton(circButton, StyleUtil.MAIN_GREEN, Color.BLACK);
+        circButton.setFont(StyleUtil.BIG_FONT);
         circButton.setPreferredSize(new Dimension(300, 300));
         circButton.setHorizontalTextPosition(SwingConstants.CENTER);
         circButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         // 判断是否已完成，已完成则禁用并标记
-        if (finished.contains("area-radius") || finished.contains("area-diameter")) {
+        if (finished.contains("area-radius") && finished.contains("area-diameter")) {
             areaButton.setEnabled(false);
             areaButton.setText("Area (Completed)");
+            areaButton.setBackground(new Color(220, 220, 220));
+            areaButton.setForeground(Color.GRAY);
         }
-        if (finished.contains("circ-radius") || finished.contains("circ-diameter")) {
+        if (finished.contains("circ-radius") && finished.contains("circ-diameter")) {
             circButton.setEnabled(false);
             circButton.setText("Circumference (Completed)");
+            circButton.setBackground(new Color(220, 220, 220));
+            circButton.setForeground(Color.GRAY);
         }
 
         buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 60, 0));
+        StyleUtil.stylePanel(buttonPanel);
         buttonPanel.add(areaButton);
         buttonPanel.add(circButton);
-        buttonPanel.setOpaque(false);
         mainPanel.add(buttonPanel);
+
 
         // 主菜单底部只保留Home按钮
         JButton homeBtn = new JButton("Home");
-        homeBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        homeBtn.setFont(StyleUtil.NORMAL_FONT);
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 18));
+        StyleUtil.stylePanel(bottomPanel);
         bottomPanel.add(homeBtn);
         add(bottomPanel, BorderLayout.SOUTH);
         homeBtn.addActionListener(e -> {
@@ -109,6 +117,7 @@ public class CircleCalculationPanel extends JPanel {
         questionPanel = new JPanel();
         questionPanel.setLayout(new BoxLayout(questionPanel, BoxLayout.Y_AXIS));
         questionPanel.setBorder(BorderFactory.createEmptyBorder(30, 80, 30, 80));
+        StyleUtil.stylePanel(questionPanel);
         // 随机生成参数
         Random rand = new Random();
         if (isRadius) {
@@ -122,20 +131,26 @@ public class CircleCalculationPanel extends JPanel {
         String paramStr = isRadius ? ("radius = " + radius) : ("diameter = " + diameter);
         String what = isArea ? "area" : "circumference";
         questionLabel = new JLabel("Given " + paramStr + ", please calculate the " + what + " of the circle.", SwingConstants.CENTER);
-        questionLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        StyleUtil.styleLabel(questionLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(questionLabel);
         questionPanel.add(Box.createVerticalStrut(20));
         // 输入区
         JPanel inputPanel = new JPanel();
+        StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         answerField = new JTextField();
         answerField.setMaximumSize(new Dimension(120, 32));
         answerField.setPreferredSize(new Dimension(120, 32));
-        answerField.setFont(new Font("Arial", Font.PLAIN, 18));
+        answerField.setFont(StyleUtil.NORMAL_FONT);
+        answerField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 2),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
         submitButton = new JButton("Submit");
+        StyleUtil.styleButton(submitButton, StyleUtil.MAIN_GREEN, Color.BLACK);
         JLabel piLabel = new JLabel("π");
-        piLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        StyleUtil.styleLabel(piLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         inputPanel.add(new JLabel((isArea ? "Area = " : "Circumference = ")));
         inputPanel.add(answerField);
         inputPanel.add(piLabel);
@@ -143,12 +158,12 @@ public class CircleCalculationPanel extends JPanel {
         questionPanel.add(inputPanel);
         // 倒计时
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
-        timerLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(timerLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         timerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(timerLabel);
         // 反馈
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
-        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         questionPanel.add(feedbackLabel);
         add(questionPanel, BorderLayout.CENTER);
@@ -173,10 +188,13 @@ public class CircleCalculationPanel extends JPanel {
         // 先移除原有底部
         removeSouthPanel();
         JButton homeBtn = new JButton("Home");
-        homeBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        homeBtn.setFont(StyleUtil.NORMAL_FONT);
         JButton backBtn = new JButton("Back to Selection");
-        backBtn.setFont(new Font("Arial", Font.PLAIN, 20));
+        StyleUtil.styleButton(backBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        backBtn.setFont(StyleUtil.NORMAL_FONT);
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 18));
+        StyleUtil.stylePanel(bottomPanel);
         bottomPanel.add(homeBtn);
         bottomPanel.add(backBtn);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -263,19 +281,20 @@ public class CircleCalculationPanel extends JPanel {
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         explainPanel.setBorder(BorderFactory.createEmptyBorder(30, 80, 30, 80));
+        StyleUtil.stylePanel(explainPanel);
         explainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         // 反馈
         feedbackLabel = new JLabel(correct ? ("Correct! " + (isArea ? "Area" : "Circumference") + " = " + correctCoeff + "π")
                 : (timeout ? "Time's up! The correct answer is: " + correctCoeff + "π"
                 : "Incorrect! The correct answer is: " + correctCoeff + "π"), SwingConstants.CENTER);
-        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(feedbackLabel);
         explainPanel.add(Box.createVerticalStrut(10));
         // 公式
         String formula = isArea ? "A = π × r²" : (isRadius ? "C = 2 × π × r" : "C = π × d");
         formulaLabel = new JLabel("Formula: " + formula, SwingConstants.CENTER);
-        formulaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(formulaLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         formulaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(formulaLabel);
         explainPanel.add(Box.createVerticalStrut(10));
@@ -296,7 +315,7 @@ public class CircleCalculationPanel extends JPanel {
                     ("Substitute: C = π × " + diameter + " = " + correctCoeff + "π");
         }
         calcLabel = new JLabel(calc, SwingConstants.CENTER);
-        calcLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(calcLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(calcLabel);
         explainPanel.add(Box.createVerticalStrut(20));
@@ -308,14 +327,16 @@ public class CircleCalculationPanel extends JPanel {
         removeCenter();
         JPanel donePanel = new JPanel();
         donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
+        StyleUtil.stylePanel(donePanel);
         JLabel doneLabel = new JLabel("Congratulations! You have completed all circle area and circumference calculations.", SwingConstants.CENTER);
-        doneLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        StyleUtil.styleLabel(doneLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_GREEN);
         doneLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         donePanel.add(Box.createVerticalStrut(40));
         donePanel.add(doneLabel);
         donePanel.add(Box.createVerticalStrut(30));
         JButton homeBtn = new JButton("Home");
-        homeBtn.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
+        homeBtn.setFont(StyleUtil.NORMAL_FONT);
         homeBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         donePanel.add(homeBtn);
         add(donePanel, BorderLayout.CENTER);
@@ -342,6 +363,7 @@ public class CircleCalculationPanel extends JPanel {
             this.diameter = d;
             this.showRadius = showRadius;
             setPreferredSize(new Dimension(200, 200));
+            StyleUtil.stylePanel(this);
         }
         @Override
         protected void paintComponent(Graphics g) {
@@ -358,12 +380,12 @@ public class CircleCalculationPanel extends JPanel {
             g2.setStroke(new BasicStroke(2));
             if (showRadius) {
                 g2.drawLine(cx, cy, cx + rPix, cy);
-                g2.setFont(new Font("Arial", Font.BOLD, 15));
+                g2.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
                 g2.setColor(Color.BLACK);
                 g2.drawString("radius = " + radius, cx + rPix / 2 - 10, cy - 10);
             } else {
                 g2.drawLine(cx - rPix, cy, cx + rPix, cy);
-                g2.setFont(new Font("Arial", Font.BOLD, 15));
+                g2.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
                 g2.setColor(Color.BLACK);
                 g2.drawString("diameter = " + diameter, cx - 30, cy - 10);
             }
@@ -396,4 +418,4 @@ public class CircleCalculationPanel extends JPanel {
     public static boolean isAllCompleted() {
         return finished.contains("area-radius") && finished.contains("area-diameter") && finished.contains("circ-radius") && finished.contains("circ-diameter");
     }
-} 
+}
