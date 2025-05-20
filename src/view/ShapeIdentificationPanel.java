@@ -176,6 +176,7 @@ public class ShapeIdentificationPanel extends JPanel {
             answerField.setText("");
             feedbackLabel.setText(" ");
             attempts = 0;
+            submitButton.setEnabled(true);
         } else {
             imageLabel.setIcon(null);
             shapeLabel.setText("Congratulations! You've completed all shapes!");
@@ -197,6 +198,7 @@ public class ShapeIdentificationPanel extends JPanel {
     private void handleSubmit() {
         String userAnswer = answerField.getText();
         attempts++;
+        submitButton.setEnabled(false);
         boolean correct = currentQuestion.checkAnswer(userAnswer);
         if (correct) {
             int points = ScoringUtil.getScore(isAdvanced, attempts);
@@ -221,6 +223,7 @@ public class ShapeIdentificationPanel extends JPanel {
                 timer.start();
             } else {
                 feedbackLabel.setText("Try again! Attempts left: " + (3 - attempts));
+                submitButton.setEnabled(true);
             }
         }
     }
