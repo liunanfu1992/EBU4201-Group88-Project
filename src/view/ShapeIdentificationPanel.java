@@ -107,8 +107,8 @@ public class ShapeIdentificationPanel extends JPanel {
         StyleUtil.stylePanel(progressPanel);
         progressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         for (int i = 0; i < PRACTICE_COUNT; i++) {
-            progressLabels[i] = new JLabel("⬜");
-            progressLabels[i].setFont(StyleUtil.BIG_FONT);
+            progressLabels[i] = new JLabel("□");
+            progressLabels[i].setFont(new Font("Dialog", Font.PLAIN, 36));
             progressLabels[i].setForeground(StyleUtil.MAIN_BLUE);
             progressPanel.add(progressLabels[i]);
         }
@@ -189,7 +189,7 @@ public class ShapeIdentificationPanel extends JPanel {
 
     private void updateProgressBar(int idx, boolean correct) {
         if (idx >= 0 && idx < PRACTICE_COUNT) {
-            progressLabels[idx].setText(correct ? "✅" : "✗");
+            progressLabels[idx].setText(correct ? "√" : "×");
             progressLabels[idx].setForeground(correct ? StyleUtil.MAIN_GREEN : StyleUtil.MAIN_PINK);
         }
     }

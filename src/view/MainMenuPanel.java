@@ -24,9 +24,9 @@ public class MainMenuPanel extends JPanel {
         JButton btn3d = new JButton("3D Shape Identification");
         JButton btnAngle = new JButton("Angle Identification");
         StyleUtil.styleButton(btn2d, StyleUtil.MAIN_YELLOW, StyleUtil.MAIN_BLUE);
-        btn2d.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
+        btn2d.setFont(new Font("Comic Sans MS", Font.BOLD, 21));
         StyleUtil.styleButton(btn3d, StyleUtil.MAIN_PINK, StyleUtil.MAIN_PURPLE);
-        btn3d.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
+        btn3d.setFont(new Font("Comic Sans MS", Font.BOLD, 21));
         StyleUtil.styleButton(btnAngle, StyleUtil.MAIN_GREEN, Color.WHITE);
         btnAngle.setFont(new Font("Comic Sans MS", Font.BOLD, 22));
         ks1Panel.add(Box.createVerticalStrut(10));
@@ -63,7 +63,7 @@ public class MainMenuPanel extends JPanel {
         JButton btnBonus1 = new JButton("Compound Shape Challenge");
         JButton btnBonus2 = new JButton("Sector Area Challenge");
         StyleUtil.styleButton(btnBonus1, StyleUtil.MAIN_GREEN, Color.WHITE);
-        btnBonus1.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        btnBonus1.setFont(new Font("Comic Sans MS", Font.BOLD, 19));
         StyleUtil.styleButton(btnBonus2, StyleUtil.MAIN_YELLOW, StyleUtil.MAIN_BLUE);
         btnBonus2.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
         btnBonus1.setEnabled(true);
