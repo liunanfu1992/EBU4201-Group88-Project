@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import src.model.ScoringUtil;
 import src.model.ScoreManager;
+import src.view.StyleUtil;
 
 public class ShapeIdentificationPanel extends JPanel {
     private JFrame parentFrame;
@@ -39,8 +40,9 @@ public class ShapeIdentificationPanel extends JPanel {
         this.is2DMode = is2D;
         this.isAdvanced = !is2D; // 3D识别为Advanced，2D为Basic
         setLayout(new BorderLayout(10, 10));
+        StyleUtil.stylePanel(this);
 
-        // Select 2D or 3D shapes
+        // 选择2D或3D题型
         shapesToIdentify = new ArrayList<>();
         for (ShapeType type : ShapeType.values()) {
             if (is2D && type.ordinal() <= ShapeType.KITE.ordinal()) {
@@ -50,60 +52,79 @@ public class ShapeIdentificationPanel extends JPanel {
             }
         }
         Collections.shuffle(shapesToIdentify);
-        // 只保留前4个
         if (shapesToIdentify.size() > PRACTICE_COUNT) {
             shapesToIdentify = shapesToIdentify.subList(0, PRACTICE_COUNT);
         }
 
-        // Top score label
+        // 顶部分数
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        StyleUtil.styleLabel(scoreLabel, StyleUtil.TITLE_FONT, StyleUtil.MAIN_BLUE);
         add(scoreLabel, BorderLayout.NORTH);
 
-        // Center question panel
+        // 中间题目区
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        StyleUtil.stylePanel(centerPanel);
+        centerPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         imageLabel = new JLabel("", SwingConstants.CENTER);
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0)); // 上下留白更小
+        imageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         centerPanel.add(imageLabel);
+
         shapeLabel = new JLabel("", SwingConstants.CENTER);
-        shapeLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        StyleUtil.styleLabel(shapeLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_PURPLE);
         shapeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(shapeLabel);
+
         answerField = new JTextField();
         answerField.setMaximumSize(new Dimension(400, 40));
+        answerField.setPreferredSize(new Dimension(400, 40));
+        answerField.setFont(StyleUtil.NORMAL_FONT);
         answerField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        answerField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 2),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
+        centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(answerField);
+
         submitButton = new JButton("Submit");
+        StyleUtil.styleButton(submitButton, StyleUtil.MAIN_GREEN, Color.BLACK);
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(4));
+        centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(submitButton);
+
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
-        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(Box.createVerticalStrut(4));
+        centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(feedbackLabel);
+
         // 进度条
         JPanel progressPanel = new JPanel();
         progressPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 0));
+        StyleUtil.stylePanel(progressPanel);
         progressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         for (int i = 0; i < PRACTICE_COUNT; i++) {
             progressLabels[i] = new JLabel("⬜");
-            progressLabels[i].setFont(new Font("Arial", Font.BOLD, 32));
+            progressLabels[i].setFont(StyleUtil.BIG_FONT);
+            progressLabels[i].setForeground(StyleUtil.MAIN_BLUE);
             progressPanel.add(progressLabels[i]);
         }
-        centerPanel.add(Box.createVerticalStrut(8));
+        centerPanel.add(Box.createVerticalStrut(20));
         centerPanel.add(progressPanel);
         add(centerPanel, BorderLayout.CENTER);
 
-        // Bottom Home button
+        // 底部Home按钮
         homeButton = new JButton("Home");
+        StyleUtil.styleButton(homeButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         JPanel bottomPanel = new JPanel();
+        StyleUtil.stylePanel(bottomPanel);
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // Event bindings
+        // 事件绑定
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,7 +145,7 @@ public class ShapeIdentificationPanel extends JPanel {
         if (currentIndex < shapesToIdentify.size()) {
             ShapeType currentShape = shapesToIdentify.get(currentIndex);
             currentQuestion = new ShapeQuestion(currentShape);
-            
+
             // 优化图片名生成逻辑：下划线转空格，单词首字母大写
             String rawName = currentShape.name().toLowerCase().replace("_", " ");
             String[] words = rawName.split(" ");
@@ -150,7 +171,7 @@ public class ShapeIdentificationPanel extends JPanel {
                 imageLabel.setText("Error loading image: " + imageName);
                 imageLabel.setIcon(null);
             }
-            
+
             shapeLabel.setText("What shape is this?");
             answerField.setText("");
             feedbackLabel.setText(" ");
@@ -169,7 +190,7 @@ public class ShapeIdentificationPanel extends JPanel {
     private void updateProgressBar(int idx, boolean correct) {
         if (idx >= 0 && idx < PRACTICE_COUNT) {
             progressLabels[idx].setText(correct ? "✅" : "✗");
-            progressLabels[idx].setForeground(correct ? new Color(34,197,94) : new Color(239,68,68));
+            progressLabels[idx].setForeground(correct ? StyleUtil.MAIN_GREEN : StyleUtil.MAIN_PINK);
         }
     }
 
@@ -215,4 +236,4 @@ public class ShapeIdentificationPanel extends JPanel {
 
     public static boolean is2DCompleted() { return completed2D; }
     public static boolean is3DCompleted() { return completed3D; }
-} 
+}
