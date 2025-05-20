@@ -1,25 +1,39 @@
+// This panel allows users to calculate the area of trapeziums.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import src.model.ScoringUtil;
 import src.model.ScoreManager;
 
 public class TrapeziumAreaQuestionPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Parameters for the trapezium
     private int base1, base2, height, correctArea, attempts = 0;
+    // Labels for displaying various information
     private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Buttons for different actions
     private JButton submitButton, nextButton, homeButton;
+    // Timer for tracking question time limit
     private Timer timer;
+    // Time remaining in seconds
     private int timeLeft = 180;
+    // Panel for displaying explanation
     private JPanel explainPanel;
+    // Labels for formula and calculation
     private JLabel formulaLabel, calcLabel;
+    // Panel for drawing the trapezium
     private TrapeziumDrawingPanel drawingPanel;
-    private int score = 0; // 总分
-    private final boolean isAdvanced = false; // 普通图形为基础题型
+    // Total score
+    private int score = 0;
+    // Flag indicating whether this is an advanced question
+    private final boolean isAdvanced = false;
 
+    // Constructor, initializes the panel and its components
     public TrapeziumAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -29,7 +43,7 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
         height = 1 + (int)(Math.random() * 20);
         correctArea = (int)(0.5 * (base1 + base2) * height);
 
-        // 顶部计时和分数
+        // Top panel for timer and score
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
@@ -40,7 +54,7 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中间内容
+        // Main content panel
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
@@ -73,7 +87,8 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
-        // 讲解区
+
+        // Explanation area
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(explainPanel);
@@ -111,6 +126,8 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
     }
+
+    // Updates the timer display and handles timeout
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -119,6 +136,8 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
             showSolution(false, true);
         }
     }
+
+    // Checks the user's answer and provides feedback
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -147,6 +166,8 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
             }
         }
     }
+
+    // Shows the solution with explanation
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
@@ -160,16 +181,25 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
             feedbackLabel.setText("Incorrect! The correct area is: " + correctArea);
         }
     }
+
+    // Returns to the shape selection panel
     private void goNext() {
         parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
         parentFrame.revalidate();
     }
+
+    // Returns to the main menu
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
+
+    // Inner class for drawing trapeziums with measurements
     static class TrapeziumDrawingPanel extends JPanel {
+        // Parameters for the trapezium
         private int base1, base2, height;
+
+        // Constructor for the drawing panel
         public TrapeziumDrawingPanel(int b1, int b2, int h) {
             this.base1 = b1;
             this.base2 = b2;
@@ -177,6 +207,8 @@ public class TrapeziumAreaQuestionPanel extends JPanel {
             setPreferredSize(new Dimension(340, 170));
             StyleUtil.stylePanel(this);
         }
+
+        // Paints the trapezium with measurements
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);

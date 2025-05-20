@@ -1,36 +1,50 @@
+// This panel allows users to calculate the area of rectangles.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import src.model.ScoringUtil;
 import src.model.ScoreManager;
 
 public class RectangleAreaQuestionPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Parameters for the rectangle
     private int length, width, correctArea, attempts = 0;
+    // Labels for displaying various information
     private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Buttons for different actions
     private JButton submitButton, nextButton, homeButton;
+    // Timer for tracking question time limit
     private Timer timer;
-    private int timeLeft = 180; // 3分钟
+    // Time remaining in seconds
+    private int timeLeft = 180; // 3 minutes
+    // Panel for displaying explanation
     private JPanel explainPanel;
+    // Labels for formula and calculation
     private JLabel formulaLabel, calcLabel;
+    // Panel for drawing the rectangle
     private RectangleDrawingPanel drawingPanel;
-    private int score = 0; // 总分
-    private final boolean isAdvanced = false; // 普通图形为基础题型
+    // Total score
+    private int score = 0; // Total score
+    // Flag indicating whether this is an advanced question
+    private final boolean isAdvanced = false; // Basic shape type
 
+    // Constructor, initializes the panel and its components
     public RectangleAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
 
-        // 随机生成参数
+        // Generate random parameters
         length = 1 + (int)(Math.random() * 20);
         width = 1 + (int)(Math.random() * 20);
         correctArea = length * width;
 
-        // 顶部计时和分数
+        // Top panel for timer and score
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
@@ -41,21 +55,21 @@ public class RectangleAreaQuestionPanel extends JPanel {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中部主面板
+        // Main content panel
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 0));
         centerPanel.add(Box.createVerticalStrut(4));
 
-        // 题干区
+        // Question area
         questionLabel = new JLabel("The length of the rectangle is " + length + ", the width is " + width + ". Please calculate its area.", SwingConstants.CENTER);
         StyleUtil.styleLabel(questionLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
         centerPanel.add(Box.createVerticalStrut(6));
 
-        // 输入区
+        // Input area
         JPanel inputPanel = new JPanel();
         StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -76,13 +90,13 @@ public class RectangleAreaQuestionPanel extends JPanel {
         inputPanel.add(submitButton);
         centerPanel.add(inputPanel);
 
-        // 反馈区
+        // Feedback area
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
 
-        // 讲解区（公式在上，图片居中，代入在下）
+        // Explanation area (formula at top, image in center, substitution at bottom)
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(explainPanel);
@@ -109,7 +123,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部按钮
+        // Bottom buttons
         nextButton = new JButton("Back to Selection");
         StyleUtil.styleButton(nextButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         nextButton.setEnabled(true);
@@ -121,16 +135,17 @@ public class RectangleAreaQuestionPanel extends JPanel {
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
+        // Event bindings
         submitButton.addActionListener(e -> checkAnswer());
         nextButton.addActionListener(e -> goNext());
         homeButton.addActionListener(e -> goHome());
 
-        // 启动倒计时
+        // Start countdown timer
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
     }
 
+    // Updates the timer display and handles timeout
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -140,6 +155,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
         }
     }
 
+    // Checks the user's answer and provides feedback
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -169,6 +185,7 @@ public class RectangleAreaQuestionPanel extends JPanel {
         }
     }
 
+    // Shows the solution with explanation
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
@@ -183,25 +200,32 @@ public class RectangleAreaQuestionPanel extends JPanel {
         }
     }
 
+    // Returns to the shape selection panel
     private void goNext() {
         parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
         parentFrame.revalidate();
     }
 
+    // Returns to the main menu
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
 
-    // 内部类：绘制带标注的矩形
+    // Inner class for drawing rectangles with measurements
     static class RectangleDrawingPanel extends JPanel {
+        // Parameters for the rectangle
         private int length, width;
+
+        // Constructor for the drawing panel
         public RectangleDrawingPanel(int l, int w) {
             this.length = l;
             this.width = w;
             setPreferredSize(new Dimension(320, 110));
             StyleUtil.stylePanel(this);
         }
+
+        // Paints the rectangle with measurements
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);

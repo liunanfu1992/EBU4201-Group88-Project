@@ -15,7 +15,7 @@ public class MainMenuPanel extends JPanel {
         titleLabel.setForeground(StyleUtil.MAIN_PURPLE);
         add(titleLabel, BorderLayout.NORTH);
 
-        // KS1模块
+        // KS1
         JPanel ks1Panel = new JPanel();
         ks1Panel.setLayout(new BoxLayout(ks1Panel, BoxLayout.Y_AXIS));
         ks1Panel.setBackground(StyleUtil.BG_COLOR);
@@ -37,7 +37,7 @@ public class MainMenuPanel extends JPanel {
         ks1Panel.add(btnAngle);
         ks1Panel.add(Box.createVerticalStrut(10));
 
-        // KS2模块
+        // KS2
         JPanel ks2Panel = new JPanel();
         ks2Panel.setLayout(new BoxLayout(ks2Panel, BoxLayout.Y_AXIS));
         ks2Panel.setBackground(StyleUtil.BG_COLOR);
@@ -55,7 +55,7 @@ public class MainMenuPanel extends JPanel {
         ks2Panel.add(btnCircle);
         ks2Panel.add(Box.createVerticalStrut(20));
 
-        // Bonus模块
+        // Bonus
         JPanel bonusPanel = new JPanel();
         bonusPanel.setLayout(new BoxLayout(bonusPanel, BoxLayout.Y_AXIS));
         bonusPanel.setBackground(StyleUtil.BG_COLOR);
@@ -74,7 +74,7 @@ public class MainMenuPanel extends JPanel {
         bonusPanel.add(btnBonus2);
         bonusPanel.add(Box.createVerticalStrut(20));
 
-        // 主体三栏（缩小高度）
+        // Main body three columns (reduced height)
         JPanel mainPanel = new JPanel(new GridLayout(1, 3, 30, 0));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 30)); // 上下边距缩小
         mainPanel.setBackground(StyleUtil.BG_COLOR);
@@ -83,7 +83,7 @@ public class MainMenuPanel extends JPanel {
         mainPanel.add(bonusPanel);
         add(mainPanel, BorderLayout.CENTER);
 
-        // 进度条面板
+        // Progress bar panel
         JPanel progressPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -94,7 +94,7 @@ public class MainMenuPanel extends JPanel {
                 int barH = 28;
                 int barY = 32;
                 int segW = w / 6;
-                // 判定各任务完成
+                // Check completion status of each task
                 boolean t1_2d = src.view.ShapeIdentificationPanel.is2DCompleted();
                 boolean t1_3d = src.view.ShapeIdentificationPanel.is3DCompleted();
                 boolean t2 = src.view.AngleIdentificationPanel.isCompleted();
@@ -102,7 +102,7 @@ public class MainMenuPanel extends JPanel {
                 boolean t4 = src.view.CircleCalculationPanel.isAllCompleted();
                 boolean b1 = src.view.CompoundShapeSelectionPanel.isAllCompleted();
                 boolean b2 = src.view.SectorSelectionPanel.isAllCompleted();
-                // 画6段
+                // Draw 6 segments
                 Color doneColor = StyleUtil.MAIN_GREEN;
                 Color halfColor = StyleUtil.MAIN_YELLOW;
                 Color notColor = new Color(220,220,220);
@@ -110,9 +110,9 @@ public class MainMenuPanel extends JPanel {
                     int x = i * segW + 8;
                     int y = barY;
                     int w0 = segW - 16;
-                    // 2D/3D特殊处理
+                    // Special handling for 2D/3D
                     if (i == 0) {
-                        // 2D/3D共用一格
+                        // 2D/3D share one segment
                         g2.setColor(notColor);
                         g2.fillRoundRect(x, y, w0, barH, 16, 16);
                         if (t1_2d && t1_3d) {
@@ -134,12 +134,12 @@ public class MainMenuPanel extends JPanel {
                         g2.setColor(done ? doneColor : notColor);
                         g2.fillRoundRect(x, y, w0, barH, 16, 16);
                     }
-                    // 边框
+                    // Border
                     g2.setColor(StyleUtil.MAIN_PURPLE);
                     g2.setStroke(new BasicStroke(3));
                     g2.drawRoundRect(x, y, w0, barH, 16, 16);
                 }
-                // 英文标签
+                // English labels
                 String[] labels = {"Task1-2D/3D", "Task2", "Task3", "Task4", "Bonus1", "Bonus2"};
                 for (int i = 0; i < 6; i++) {
                     int x = i * segW + 8;
@@ -152,7 +152,7 @@ public class MainMenuPanel extends JPanel {
         progressPanel.setPreferredSize(new Dimension(700, 70));
         progressPanel.setOpaque(false);
 
-        // 底部面板（进度条+按钮）
+        // Bottom panel (progress bar + buttons)
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setBackground(StyleUtil.BG_COLOR);
@@ -171,7 +171,7 @@ public class MainMenuPanel extends JPanel {
             System.exit(0);
         });
 
-        // 按钮事件
+        // Button events
         btn2d.addActionListener(e -> {
             parentFrame.setContentPane(new ShapeIdentificationPanel(parentFrame, true));
             parentFrame.revalidate();

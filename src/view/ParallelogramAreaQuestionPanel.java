@@ -1,23 +1,36 @@
+// This panel allows users to calculate the area of parallelograms.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import src.model.ScoreManager;
 
 public class ParallelogramAreaQuestionPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Parameters for the parallelogram
     private int base, height, correctArea, attempts = 0;
+    // Labels for displaying various information
     private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Buttons for different actions
     private JButton submitButton, nextButton, homeButton;
+    // Timer for tracking question time limit
     private Timer timer;
+    // Time remaining in seconds
     private int timeLeft = 180;
+    // Panel for displaying explanation
     private JPanel explainPanel;
+    // Labels for formula and calculation
     private JLabel formulaLabel, calcLabel;
+    // Panel for drawing the parallelogram
     private ParallelogramDrawingPanel drawingPanel;
-    private int score = 0; // 总分
+    // Total score
+    private int score = 0;
 
+    // Constructor, initializes the panel and its components
     public ParallelogramAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -26,7 +39,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         height = 1 + (int)(Math.random() * 20);
         correctArea = base * height;
 
-        // 顶部计时和分数
+        // Top timer and score
         JPanel topPanel = new JPanel(new GridLayout(1, 2));
         StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
@@ -37,7 +50,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         topPanel.add(scoreLabel);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中间内容
+        // Middle content
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
@@ -70,7 +83,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
-        // 讲解区
+        // Explanation area
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(explainPanel);
@@ -108,6 +121,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         timer = new Timer(1000, e -> updateTimer());
         timer.start();
     }
+    // Updates the timer display and handles timeout
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -116,6 +130,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             showSolution(false, true);
         }
     }
+    // Checks the user's answer and provides feedback
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -129,7 +144,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         if (ans == correctArea) {
             timer.stop();
             showSolution(true, false);
-            int points = 10; // 可根据ScoringUtil调整
+            int points = 10; 
             score += points;
             scoreLabel.setText("Score: " + score);
             ScoreManager.getInstance().addScore(points);
@@ -143,6 +158,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             }
         }
     }
+    // Shows the solution with explanation
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
@@ -156,22 +172,29 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             feedbackLabel.setText("Incorrect! The correct area is: " + correctArea);
         }
     }
+    // Returns to the shape selection panel
     private void goNext() {
         parentFrame.setContentPane(new ShapeAreaPanel(parentFrame));
         parentFrame.revalidate();
     }
+    // Returns to the main menu
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
+    // Inner class for drawing parallelograms with measurements
     static class ParallelogramDrawingPanel extends JPanel {
+        // Parameters for the parallelogram
         private int base, height;
+
+        // Constructor for the drawing panel
         public ParallelogramDrawingPanel(int b, int h) {
             this.base = b;
             this.height = h;
             setPreferredSize(new Dimension(320, 160));
             StyleUtil.stylePanel(this);
         }
+        // Paints the parallelogram with measurements
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -185,7 +208,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             int h = (int)(height * scale);
             int x = (panelW - b) / 2;
             int y = (panelH - h) / 2;
-            int offset = b / 4; // 平行四边形倾斜
+            int offset = b / 4;
             Polygon p = new Polygon();
             p.addPoint(x + offset, y);
             p.addPoint(x + b, y);

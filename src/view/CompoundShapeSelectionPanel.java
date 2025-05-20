@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class CompoundShapeSelectionPanel extends JPanel {
     private JFrame parentFrame;
-    private static boolean[] completed = new boolean[6]; // 只保留6题
+    private static boolean[] completed = new boolean[6];
     private JButton[] shapeButtons = new JButton[6];
     private JProgressBar progressBar;
 
@@ -58,7 +58,7 @@ public class CompoundShapeSelectionPanel extends JPanel {
         gridPanel.setBorder(BorderFactory.createEmptyBorder(30, 60, 30, 60));
         add(gridPanel, BorderLayout.CENTER);
 
-        // 美化进度条
+        // Beautify progress bar
         int done = 0;
         for (int i = 0; i < 6; i++) if (completed[i]) done++;
         progressBar = new JProgressBar(0, 6);
@@ -75,7 +75,7 @@ public class CompoundShapeSelectionPanel extends JPanel {
         progressPanel.add(progressBar, BorderLayout.CENTER);
         add(progressPanel, BorderLayout.SOUTH);
 
-        // Home按钮美化
+        // Beautify the Home button
         JButton homeBtn = new JButton("Home");
         StyleUtil.styleButton(homeBtn, StyleUtil.MAIN_YELLOW, Color.BLACK);
         homeBtn.setFont(StyleUtil.NORMAL_FONT);

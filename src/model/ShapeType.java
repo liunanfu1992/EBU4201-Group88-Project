@@ -1,5 +1,7 @@
 package src.model;
 
+// Enum representing different types of shapes, both 2D and 3D.
+// This enum is used to categorize shapes into types such as circle, rectangle, triangle, etc.
 public enum ShapeType {
 
     CIRCLE,

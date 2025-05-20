@@ -191,7 +191,7 @@ public class CompoundShapePanel extends JPanel {
         breakdown = breakdowns[idx];
         answerField.setText("");
         feedbackLabel.setText(" ");
-        answerImageLabel.setIcon(null); // 清空上一次的答案图片
+        answerImageLabel.setIcon(null); 
         attempts = 0;
         submitButton.setEnabled(true);
         answerField.setEnabled(true);

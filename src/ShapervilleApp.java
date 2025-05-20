@@ -2,7 +2,6 @@ package src;
 
 import src.view.MainMenuPanel;
 import javax.swing.*;
-import java.awt.*;
 
 public class ShapervilleApp {
     public static void main(String[] args) {

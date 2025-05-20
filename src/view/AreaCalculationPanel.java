@@ -1,3 +1,5 @@
+// This panel allows users to calculate the area of different shapes.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
@@ -10,25 +12,42 @@ import java.util.List;
 import java.util.Random;
 
 public class AreaCalculationPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // List of shape types
     private List<String> shapeTypes;
+    // Current question index
     private int currentIndex = 0;
+    // Number of attempts for the current question
     private int attempts = 0;
+    // Current score
     private int score = 0;
 
+    // Label for question description
     private JLabel questionLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Submit button
     private JButton submitButton;
+    // Home button to return to main menu
     private JButton homeButton;
+    // Label for feedback messages
     private JLabel feedbackLabel;
+    // Label for score display
     private JLabel scoreLabel;
+    // Label for shape image
     private JLabel imageLabel;
+    // Label for question image
     private JLabel shapeImageLabel;
 
+    // Parameters for the current question
     private double[] params;
+    // Correct answer for the current question
     private double correctAnswer;
+    // Formula description for the current question
     private String formula;
 
+    // Constructor, initializes the panel and its components
     public AreaCalculationPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -112,6 +131,7 @@ public class AreaCalculationPanel extends JPanel {
         loadNextQuestion();
     }
 
+    // Load the next question
     private void loadNextQuestion() {
         if (currentIndex >= shapeTypes.size()) {
             feedbackLabel.setText("All area questions completed! Your final score: " + score);
@@ -212,6 +232,7 @@ public class AreaCalculationPanel extends JPanel {
         attempts = 0;
     }
 
+    // Handle answer submission
     private void handleSubmit() {
         String userAnswer = answerField.getText();
         attempts++;
@@ -244,6 +265,7 @@ public class AreaCalculationPanel extends JPanel {
         }
     }
 
+    // Return to main menu
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();

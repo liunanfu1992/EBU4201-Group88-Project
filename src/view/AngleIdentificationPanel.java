@@ -1,3 +1,5 @@
+// This panel allows users to input an angle and identify its type.
+// It includes angle drawing, type identification, and progress display features.
 package src.view;
 
 import src.model.AngleType;
@@ -14,36 +16,61 @@ import src.model.ScoringUtil;
 import src.model.ScoreManager;
 import java.util.HashSet;
 import java.util.Set;
-import src.view.StyleUtil;
 
 public class AngleIdentificationPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // List of questions, each is an AngleQuestion object
     private List<AngleQuestion> questions;
+    // Current question index
     private int currentIndex = 0;
+    // Number of attempts for the current question
     private int attempts = 0;
+    // Current score
     private int score = 0;
+    // Whether advanced mode is enabled (false in this project)
     private final boolean isAdvanced = false; 
 
+    // Label for angle
     private JLabel angleLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Submit button
     private JButton submitButton;
+    // Home button to return to main menu
     private JButton homeButton;
+    // Label for feedback messages
     private JLabel feedbackLabel;
+    // Label for score display
     private JLabel scoreLabel;
+    // Panel for drawing angles
     private AngleDrawingPanel angleDrawingPanel;
+    // Text field for user angle input
     private JTextField angleInputField;
+    // Button to draw angle
     private JButton angleInputButton;
+    // Current input angle value
     private int currentAngleValue = -1;
+    // Current angle type
     private AngleType currentAngleType;
+    // Number of attempts for current type
     private int typeAttempts = 0;
+    // Whether to show angle prompt
     private boolean showAnglePrompt = false;
+    // Label for type identification prompt
     private JLabel identifyLabel;
+    // Label for tips
     private JLabel tipLabel;
+    // Set of practiced angle types
     private Set<AngleType> practicedTypes = new HashSet<>();
+    // Progress bar panel
     private JPanel progressPanel;
+    // Array of type labels
     private JLabel[] typeLabels;
+    // Whether all practice is completed
     private static boolean completed = false;
 
+    // Constructor, initializes the panel and its components
     public AngleIdentificationPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -200,6 +227,7 @@ public class AngleIdentificationPanel extends JPanel {
         updateProgressBar();
     }
 
+    // Get a random angle value for the specified type
     private int getRandomAngleForType(AngleType type, Random rand) {
         switch (type) {
             case ACUTE:
@@ -217,6 +245,7 @@ public class AngleIdentificationPanel extends JPanel {
         }
     }
 
+    // Load the next question
     private void loadNextQuestion() {
         if (practicedTypes.size() == 5) {
             feedbackLabel.setText("All angle types practiced! Your final score: " + score);
@@ -252,6 +281,7 @@ public class AngleIdentificationPanel extends JPanel {
         updateProgressBar();
     }
 
+    // Handle angle input
     private void handleAngleInput() {
         String input = angleInputField.getText().trim();
         int angleValue = -1;
@@ -286,6 +316,7 @@ public class AngleIdentificationPanel extends JPanel {
         updateProgressBar();
     }
 
+    // Update angle prompt
     private void updateAnglePrompt() {
         if (showAnglePrompt && currentAngleValue >= 0) {
             identifyLabel.setText("Identify the type of angle: " + currentAngleValue + "°");
@@ -296,6 +327,7 @@ public class AngleIdentificationPanel extends JPanel {
         }
     }
 
+    // Determine angle type based on angle value
     private AngleType getAngleType(int angle) {
         if (angle < 90) return AngleType.ACUTE;
         if (angle == 90) return AngleType.RIGHT;
@@ -304,6 +336,7 @@ public class AngleIdentificationPanel extends JPanel {
         return AngleType.REFLEX;
     }
 
+    // Handle answer submission
     private void handleSubmit() {
         if (currentAngleValue < 0) {
             feedbackLabel.setText("Please enter and draw an angle first.");
@@ -349,11 +382,13 @@ public class AngleIdentificationPanel extends JPanel {
         }
     }
 
+    // Return to main menu
     private void goHome() {
         parentFrame.setContentPane(new MainMenuPanel(parentFrame));
         parentFrame.revalidate();
     }
 
+    // Update progress bar display
     private void updateProgressBar() {
         for (int i = 0; i < 5; i++) {
             AngleType t = AngleType.values()[i];
@@ -369,9 +404,11 @@ public class AngleIdentificationPanel extends JPanel {
         }
     }
 
+    // Check if all practice is completed
     public static boolean isCompleted() { return completed; }
 }
 
+// Panel for drawing angles on the interface
 class AngleDrawingPanel extends JPanel {
     private int angle = -1;
 
@@ -379,10 +416,13 @@ class AngleDrawingPanel extends JPanel {
         setBackground(StyleUtil.BG_COLOR);
     }
 
+    // Set the angle to be drawn
     public void setAngle(int angle) {
         this.angle = angle;
         repaint();
     }
+
+    // Override paint method to draw the angle
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);

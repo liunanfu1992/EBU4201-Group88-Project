@@ -1,8 +1,9 @@
+// This panel allows users to calculate the area and circumference of circles.
+// It includes question generation, image display, answer validation, and score tracking.
 package src.view;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Random;
@@ -10,21 +11,36 @@ import src.model.ScoreManager;
 import src.model.ScoringUtil;
 
 public class CircleCalculationPanel extends JPanel {
+    // Reference to the main frame
     private JFrame parentFrame;
+    // Labels for displaying various information
     private JLabel titleLabel, progressLabel, questionLabel, timerLabel, feedbackLabel, formulaLabel, calcLabel;
+    // Text field for user answer input
     private JTextField answerField;
+    // Buttons for different actions
     private JButton submitButton, homeButton, areaButton, circButton, nextButton;
+    // Panels for organizing the UI components
     private JPanel mainPanel, questionPanel, explainPanel, buttonPanel;
+    // Timer for tracking question time limit
     private Timer timer;
+    // Time remaining in seconds
     private int timeLeft = 180;
+    // Flag indicating whether calculating area (true) or circumference (false)
     private boolean isArea = true;
+    // Flag indicating whether using radius (true) or diameter (false)
     private boolean isRadius = true;
+    // Circle parameters
     private int radius = 0, diameter = 0;
+    // Correct answer for the current question
     private double correctAnswer = 0;
+    // Number of attempts for current question
     private int attempts = 0;
+    // Set to track completed question types
     private static Set<String> finished = new HashSet<>(); 
+    // Coefficient for calculating the correct answer
     private int correctCoeff = 0;
 
+    // Constructor, initializes the panel and its components
     public CircleCalculationPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
@@ -38,7 +54,7 @@ public class CircleCalculationPanel extends JPanel {
         showMainMenu();
     }
 
-
+    // Shows the main menu with options to calculate area or circumference
     private void showMainMenu() {
         removeCenter();
         removeSouthPanel();
@@ -61,14 +77,14 @@ public class CircleCalculationPanel extends JPanel {
         areaButton = new JButton("Area", areaIcon);
         StyleUtil.styleButton(areaButton, StyleUtil.MAIN_GREEN, Color.BLACK);
         areaButton.setFont(StyleUtil.BIG_FONT);
-        areaButton.setPreferredSize(new Dimension(300, 300));
+        areaButton.setPreferredSize(new Dimension(290, 320));
         areaButton.setHorizontalTextPosition(SwingConstants.CENTER);
         areaButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
         circButton = new JButton("Circumference", circIcon);
         StyleUtil.styleButton(circButton, StyleUtil.MAIN_GREEN, Color.BLACK);
         circButton.setFont(StyleUtil.BIG_FONT);
-        circButton.setPreferredSize(new Dimension(300, 300));
+        circButton.setPreferredSize(new Dimension(290, 320));
         circButton.setHorizontalTextPosition(SwingConstants.CENTER);
         circButton.setVerticalTextPosition(SwingConstants.BOTTOM);
 
@@ -109,6 +125,7 @@ public class CircleCalculationPanel extends JPanel {
         circButton.addActionListener(e -> startQuestion(false));
     }
 
+    // Shows the question panel with the current question
     private void showQuestionPanel() {
         removeCenter();
         questionPanel = new JPanel();
@@ -173,6 +190,7 @@ public class CircleCalculationPanel extends JPanel {
         submitButton.addActionListener(e -> checkAnswer());
     }
 
+    // Adds the bottom bar with navigation buttons
     private void addQuestionBottomBar() {
         removeSouthPanel();
         JButton homeBtn = new JButton("Home");
@@ -195,6 +213,7 @@ public class CircleCalculationPanel extends JPanel {
         });
     }
 
+    // Starts a new question based on the selected type (area or circumference)
     private void startQuestion(boolean area) {
         isArea = area;
         String keyRadius = (isArea ? "area-radius" : "circ-radius");
@@ -212,6 +231,7 @@ public class CircleCalculationPanel extends JPanel {
         showQuestionPanel();
     }
 
+    // Updates the timer display and handles timeout
     private void updateTimer() {
         timeLeft--;
         timerLabel.setText("Time left: " + timeLeft + "s");
@@ -221,6 +241,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Checks the user's answer and provides feedback
     private void checkAnswer() {
         String input = answerField.getText().trim();
         int ans = -1;
@@ -246,6 +267,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Shows the solution with explanation
     private void showSolution(boolean correct, boolean timeout) {
         answerField.setEnabled(false);
         submitButton.setEnabled(false);
@@ -302,6 +324,7 @@ public class CircleCalculationPanel extends JPanel {
         revalidate(); repaint();
     }
 
+    // Shows the completion message
     private void showComplete() {
         removeCenter();
         JPanel donePanel = new JPanel();
@@ -326,6 +349,7 @@ public class CircleCalculationPanel extends JPanel {
         });
     }
 
+    // Removes the center panel
     private void removeCenter() {
         if (mainPanel != null) remove(mainPanel);
         if (questionPanel != null) remove(questionPanel);
@@ -333,9 +357,14 @@ public class CircleCalculationPanel extends JPanel {
         revalidate(); repaint();
     }
 
+    // Inner class for drawing circles with measurements
     static class CircleDrawingPanel extends JPanel {
+        // Circle parameters
         private int radius, diameter;
+        // Flag indicating whether to show radius (true) or diameter (false)
         private boolean showRadius;
+
+        // Constructor for the drawing panel
         public CircleDrawingPanel(int r, int d, boolean showRadius) {
             this.radius = r;
             this.diameter = d;
@@ -343,6 +372,8 @@ public class CircleCalculationPanel extends JPanel {
             setPreferredSize(new Dimension(200, 200));
             StyleUtil.stylePanel(this);
         }
+
+        // Paints the circle with measurements
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -370,6 +401,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Scales an icon proportionally to fit within maximum dimensions
     private ImageIcon scaleIconProportionally(ImageIcon icon, int maxDim) {
         int w = icon.getIconWidth();
         int h = icon.getIconHeight();
@@ -380,6 +412,7 @@ public class CircleCalculationPanel extends JPanel {
         return new ImageIcon(img);
     }
 
+    // Removes the south panel
     private void removeSouthPanel() {
         for (Component comp : getComponents()) {
             Object cons = getLayout() instanceof BorderLayout ? ((BorderLayout)getLayout()).getConstraints(comp) : null;
@@ -390,6 +423,7 @@ public class CircleCalculationPanel extends JPanel {
         }
     }
 
+    // Checks if all question types are completed
     public static boolean isAllCompleted() {
         return finished.contains("area-radius") && finished.contains("area-diameter") && finished.contains("circ-radius") && finished.contains("circ-diameter");
     }
