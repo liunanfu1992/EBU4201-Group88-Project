@@ -8,7 +8,7 @@ import src.model.ScoreManager;
 public class ParallelogramAreaQuestionPanel extends JPanel {
     private JFrame parentFrame;
     private int base, height, correctArea, attempts = 0;
-    private JLabel timerLabel, feedbackLabel, questionLabel;
+    private JLabel timerLabel, feedbackLabel, questionLabel, scoreLabel;
     private JTextField answerField;
     private JButton submitButton, nextButton, homeButton;
     private Timer timer;
@@ -16,49 +16,72 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
     private JPanel explainPanel;
     private JLabel formulaLabel, calcLabel;
     private ParallelogramDrawingPanel drawingPanel;
+    private int score = 0; // 总分
 
     public ParallelogramAreaQuestionPanel(JFrame frame) {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
+        StyleUtil.stylePanel(this);
         base = 1 + (int)(Math.random() * 20);
         height = 1 + (int)(Math.random() * 20);
         correctArea = base * height;
+
+        // 顶部计时和分数
+        JPanel topPanel = new JPanel(new GridLayout(1, 2));
+        StyleUtil.stylePanel(topPanel);
         timerLabel = new JLabel("Time left: 180s", SwingConstants.CENTER);
-        timerLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(timerLabel, BorderLayout.NORTH);
+        StyleUtil.styleLabel(timerLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
+        scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
+        StyleUtil.styleLabel(scoreLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
+        topPanel.add(timerLabel);
+        topPanel.add(scoreLabel);
+        add(topPanel, BorderLayout.NORTH);
+
+        // 中间内容
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        StyleUtil.stylePanel(centerPanel);
         centerPanel.add(Box.createVerticalStrut(10));
         questionLabel = new JLabel("The base of the parallelogram is " + base + ", the height is " + height + ". Please calculate its area.", SwingConstants.CENTER);
-        questionLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        StyleUtil.styleLabel(questionLabel, StyleUtil.BIG_FONT, StyleUtil.MAIN_BLUE);
         questionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(questionLabel);
         centerPanel.add(Box.createVerticalStrut(20));
         JPanel inputPanel = new JPanel();
+        StyleUtil.stylePanel(inputPanel);
         inputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel areaLabel = new JLabel("Area = ");
+        StyleUtil.styleLabel(areaLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         answerField = new JTextField();
         answerField.setMaximumSize(new Dimension(120, 32));
         answerField.setPreferredSize(new Dimension(120, 32));
-        answerField.setFont(new Font("Arial", Font.PLAIN, 18));
+        answerField.setFont(StyleUtil.NORMAL_FONT);
+        answerField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(StyleUtil.MAIN_BLUE, 2),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)
+        ));
         submitButton = new JButton("Submit");
-        inputPanel.add(new JLabel("Area = "));
+        StyleUtil.styleButton(submitButton, StyleUtil.MAIN_GREEN, Color.BLACK);
+        inputPanel.add(areaLabel);
         inputPanel.add(answerField);
         inputPanel.add(submitButton);
         centerPanel.add(inputPanel);
         feedbackLabel = new JLabel(" ", SwingConstants.CENTER);
-        feedbackLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(feedbackLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         feedbackLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(feedbackLabel);
+        // 讲解区
         explainPanel = new JPanel();
         explainPanel.setLayout(new BoxLayout(explainPanel, BoxLayout.Y_AXIS));
+        StyleUtil.stylePanel(explainPanel);
         explainPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         formulaLabel = new JLabel("Formula: A = base × height", SwingConstants.CENTER);
-        formulaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(formulaLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         formulaLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         drawingPanel = new ParallelogramDrawingPanel(base, height);
         drawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         calcLabel = new JLabel("Substitute: A = " + base + " × " + height + " = " + correctArea, SwingConstants.CENTER);
-        calcLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        StyleUtil.styleLabel(calcLabel, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_PURPLE);
         calcLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         explainPanel.add(formulaLabel);
         explainPanel.add(Box.createVerticalStrut(10));
@@ -70,9 +93,12 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         centerPanel.add(explainPanel);
         add(centerPanel, BorderLayout.CENTER);
         nextButton = new JButton("Back to Selection");
+        StyleUtil.styleButton(nextButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         nextButton.setEnabled(true);
         homeButton = new JButton("Home");
+        StyleUtil.styleButton(homeButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         JPanel bottomPanel = new JPanel();
+        StyleUtil.stylePanel(bottomPanel);
         bottomPanel.add(nextButton);
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
@@ -103,7 +129,9 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
         if (ans == correctArea) {
             timer.stop();
             showSolution(true, false);
-            int points = 10; // Assuming a default points value
+            int points = 10; // 可根据ScoringUtil调整
+            score += points;
+            scoreLabel.setText("Score: " + score);
             ScoreManager.getInstance().addScore(points);
             ShapeAreaPanel.markShapeAsCompleted("Parallelogram");
         } else {
@@ -142,6 +170,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             this.base = b;
             this.height = h;
             setPreferredSize(new Dimension(320, 160));
+            StyleUtil.stylePanel(this);
         }
         @Override
         protected void paintComponent(Graphics g) {
@@ -165,7 +194,7 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             g2.setStroke(new BasicStroke(3));
             g2.setColor(new Color(255, 200, 100));
             g2.drawPolygon(p);
-            g2.setFont(new Font("Arial", Font.BOLD, 16));
+            g2.setFont(new Font("Comic Sans MS", Font.BOLD, 16));
             g2.setColor(Color.BLACK);
             FontMetrics fm = g2.getFontMetrics();
             String baseStr = "Base: " + base;
@@ -176,4 +205,4 @@ public class ParallelogramAreaQuestionPanel extends JPanel {
             g2.drawString(heightStr, x + b + 10, y + h / 2 + heightWidth / 2);
         }
     }
-} 
+}
