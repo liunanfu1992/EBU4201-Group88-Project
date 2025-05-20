@@ -23,6 +23,6 @@ public abstract class Question {
         return score;
     }
 
-    // 检查用户答案是否正确
+
     public abstract boolean checkAnswer(String userAnswer);
 } 

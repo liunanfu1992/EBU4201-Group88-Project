@@ -2,7 +2,7 @@ package src.model;
 
 public class AngleQuestion extends Question {
     private AngleType angleType;
-    private int angleValue; // 角度值（0-360）
+    private int angleValue; 
 
     public AngleQuestion(AngleType angleType, int angleValue) {
         super("Identify the type of angle: " + angleValue + "°", angleType.name().toLowerCase());

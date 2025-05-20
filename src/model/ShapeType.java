@@ -1,7 +1,7 @@
 package src.model;
 
 public enum ShapeType {
-    // 2D Shapes
+
     CIRCLE,
     RECTANGLE,
     TRIANGLE,
@@ -13,7 +13,7 @@ public enum ShapeType {
     PENTAGON,
     HEXAGON,
     KITE,
-    // 3D Shapes
+    
     CUBE,
     CUBOID,
     CYLINDER,

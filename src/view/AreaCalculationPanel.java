@@ -25,7 +25,6 @@ public class AreaCalculationPanel extends JPanel {
     private JLabel imageLabel;
     private JLabel shapeImageLabel;
 
-    // 当前题目参数
     private double[] params;
     private double correctAnswer;
     private String formula;
@@ -34,7 +33,6 @@ public class AreaCalculationPanel extends JPanel {
         this.parentFrame = frame;
         setLayout(new BorderLayout(10, 10));
 
-        // 支持的图形类型
         shapeTypes = new ArrayList<>();
         shapeTypes.add("Rectangle");
         shapeTypes.add("Triangle");
@@ -42,12 +40,10 @@ public class AreaCalculationPanel extends JPanel {
         shapeTypes.add("Trapezium");
         Collections.shuffle(shapeTypes);
 
-        // 顶部分数
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
         scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
         add(scoreLabel, BorderLayout.NORTH);
 
-        // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         imageLabel = new JLabel("", SwingConstants.CENTER);
@@ -62,7 +58,6 @@ public class AreaCalculationPanel extends JPanel {
         answerField = new JTextField();
         centerPanel.add(answerField);
 
-        // 新增：输入框下方的题型示意图片
         shapeImageLabel = new JLabel();
         shapeImageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(Box.createVerticalStrut(8));
@@ -78,7 +73,6 @@ public class AreaCalculationPanel extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // 底部Home按钮
         homeButton = new JButton("Home");
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(homeButton);
@@ -88,7 +82,6 @@ public class AreaCalculationPanel extends JPanel {
         bottomPanel.add(circleButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -130,7 +123,6 @@ public class AreaCalculationPanel extends JPanel {
             return;
         }
         String shape = shapeTypes.get(currentIndex);
-        // 加载图片
         String imageName = shape + ".png";
         String absPath = "src/resources/images/task3/" + imageName;
         ImageIcon icon = null;
@@ -155,7 +147,6 @@ public class AreaCalculationPanel extends JPanel {
         imageLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imageLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        // 新增：输入框下方的题型示意图片
         String btnImgPath = null;
         switch (shape) {
             case "Rectangle": btnImgPath = "src/resources/images/task3/RECTANGLE.png"; break;
@@ -179,8 +170,8 @@ public class AreaCalculationPanel extends JPanel {
         Random rand = new Random();
         switch (shape) {
             case "Rectangle": {
-                double length = rand.nextInt(16) + 5; // 5-20
-                double width = rand.nextInt(16) + 5;  // 5-20
+                double length = rand.nextInt(16) + 5; 
+                double width = rand.nextInt(16) + 5;  
                 params = new double[]{length, width};
                 correctAnswer = length * width;
                 formula = "Area = length × width";
@@ -229,10 +220,9 @@ public class AreaCalculationPanel extends JPanel {
             double ans = Double.parseDouble(userAnswer);
             correct = Math.abs(ans - correctAnswer) < 0.01;
         } catch (Exception e) {
-            // ignore parse error
         }
         if (correct) {
-            int points = 4 - attempts; // 1st:3, 2nd:2, 3rd:1
+            int points = 4 - attempts; 
             if (points < 1) points = 1;
             score += points;
             scoreLabel.setText("Score: " + score);

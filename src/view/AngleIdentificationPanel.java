@@ -22,7 +22,7 @@ public class AngleIdentificationPanel extends JPanel {
     private int currentIndex = 0;
     private int attempts = 0;
     private int score = 0;
-    private final boolean isAdvanced = false; // 角度识别为基础题型
+    private final boolean isAdvanced = false; 
 
     private JLabel angleLabel;
     private JTextField answerField;
@@ -49,7 +49,6 @@ public class AngleIdentificationPanel extends JPanel {
         setLayout(new BorderLayout(10, 10));
         StyleUtil.stylePanel(this);
 
-        // 生成所有角度类型的题目，角度值为10的倍数
         questions = new ArrayList<>();
         Random rand = new Random();
         for (AngleType type : AngleType.values()) {
@@ -58,7 +57,6 @@ public class AngleIdentificationPanel extends JPanel {
         }
         Collections.shuffle(questions);
 
-        // 顶部分数和进度条
         scoreLabel = new JLabel("Score: 0", SwingConstants.CENTER);
         StyleUtil.styleLabel(scoreLabel, StyleUtil.TITLE_FONT, StyleUtil.MAIN_BLUE);
 
@@ -69,8 +67,8 @@ public class AngleIdentificationPanel extends JPanel {
         typeLabels = new JLabel[5];
         for (int i = 0; i < 5; i++) {
             typeLabels[i] = new JLabel(typeNames[i]);
-            if (i == 3) { // 第4个是Straight
-                typeLabels[i].setFont(new Font("Comic Sans MS", Font.BOLD, 21)); // 用较小字号
+            if (i == 3) { 
+                typeLabels[i].setFont(new Font("Comic Sans MS", Font.BOLD, 21)); 
             } else {
                 typeLabels[i].setFont(StyleUtil.BIG_FONT);
             }
@@ -89,7 +87,6 @@ public class AngleIdentificationPanel extends JPanel {
         topPanel.add(scoreLabel, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.NORTH);
 
-        // 中间题目
         JPanel centerPanel = new JPanel();
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         StyleUtil.stylePanel(centerPanel);
@@ -108,7 +105,6 @@ public class AngleIdentificationPanel extends JPanel {
         angleInputPanel.setLayout(new BoxLayout(angleInputPanel, BoxLayout.X_AXIS));
         StyleUtil.stylePanel(angleInputPanel);
         angleInputPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        // 美化输入提示字体
         JLabel angleInputTip = new JLabel("Enter an angle (from 0 to 360, excluding 0 and 360, multiple of 10): ");
         StyleUtil.styleLabel(angleInputTip, StyleUtil.NORMAL_FONT, StyleUtil.MAIN_BLUE);
         angleInputPanel.add(angleInputTip);
@@ -121,7 +117,7 @@ public class AngleIdentificationPanel extends JPanel {
         angleDrawingPanel = new AngleDrawingPanel();
         angleDrawingPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         angleDrawingPanel.setPreferredSize(new Dimension(260, 200));
-        angleDrawingPanel.setAngle(-1); // 初始不显示角度图
+        angleDrawingPanel.setAngle(-1); 
         centerPanel.add(angleDrawingPanel);
         centerPanel.add(Box.createVerticalStrut(10));
 
@@ -159,7 +155,6 @@ public class AngleIdentificationPanel extends JPanel {
         submitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         centerPanel.add(submitButton);
 
-        // 进度条放在Submit下方
         centerPanel.add(Box.createVerticalStrut(8));
         centerPanel.add(progressPanel);
 
@@ -174,7 +169,6 @@ public class AngleIdentificationPanel extends JPanel {
         outerPanel.add(centerPanel, BorderLayout.NORTH);
         add(outerPanel, BorderLayout.CENTER);
 
-        // 底部Home按钮
         homeButton = new JButton("Home");
         StyleUtil.styleButton(homeButton, StyleUtil.MAIN_YELLOW, Color.BLACK);
         JPanel bottomPanel = new JPanel();
@@ -182,7 +176,6 @@ public class AngleIdentificationPanel extends JPanel {
         bottomPanel.add(homeButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
-        // 事件绑定
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -202,7 +195,7 @@ public class AngleIdentificationPanel extends JPanel {
             }
         });
 
-        angleDrawingPanel.setAngle(-1); // 每次重置时不显示角度图
+        angleDrawingPanel.setAngle(-1); 
         updateAnglePrompt();
         updateProgressBar();
     }
@@ -229,9 +222,9 @@ public class AngleIdentificationPanel extends JPanel {
             feedbackLabel.setText("All angle types practiced! Your final score: " + score);
             submitButton.setEnabled(false);
             answerField.setEnabled(false);
-            angleDrawingPanel.setAngle(-1); // 清空
+            angleDrawingPanel.setAngle(-1); 
             angleLabel.setText("");
-            angleInputButton.setEnabled(false); // 禁用Draw Angle
+            angleInputButton.setEnabled(false); 
             updateProgressBar();
             completed = true;
             return;
@@ -240,13 +233,12 @@ public class AngleIdentificationPanel extends JPanel {
             feedbackLabel.setText("All angles identified! Your final score: " + score);
             submitButton.setEnabled(false);
             answerField.setEnabled(false);
-            angleDrawingPanel.setAngle(-1); // 清空
+            angleDrawingPanel.setAngle(-1); 
             angleLabel.setText("");
-            angleInputButton.setEnabled(false); // 禁用Draw Angle
+            angleInputButton.setEnabled(false); 
             updateProgressBar();
             return;
         }
-        // 不自动生成角度，等待用户输入并点击Draw Angle
         angleDrawingPanel.setAngle(-1);
         angleLabel.setText("");
         answerField.setText("");
@@ -256,7 +248,7 @@ public class AngleIdentificationPanel extends JPanel {
         currentAngleType = null;
         showAnglePrompt = false;
         updateAnglePrompt();
-        angleInputButton.setEnabled(true); // 重新开始时恢复可用
+        angleInputButton.setEnabled(true); 
         updateProgressBar();
     }
 
@@ -380,7 +372,6 @@ public class AngleIdentificationPanel extends JPanel {
     public static boolean isCompleted() { return completed; }
 }
 
-// 角度绘图面板
 class AngleDrawingPanel extends JPanel {
     private int angle = -1;
 
@@ -401,27 +392,22 @@ class AngleDrawingPanel extends JPanel {
         int cx = getWidth() / 2;
         int cy = getHeight() - 70;
         int r = 70;
-        // 主射线（0°，水平向右）
         g2.setStroke(new BasicStroke(4));
         g2.setColor(new Color(60, 60, 60));
         g2.drawLine(cx, cy, cx + r, cy);
-        // 目标射线（逆时针angle度）
         double rad = Math.toRadians(angle);
         int x2 = cx + (int)(r * Math.cos(rad));
         int y2 = cy - (int)(r * Math.sin(rad));
         g2.drawLine(cx, cy, x2, y2);
-        // 端点小圆点
         g2.setColor(new Color(60, 60, 60));
         g2.fillOval(cx - 5, cy - 5, 10, 10);
         g2.fillOval(cx + r - 5, cy - 5, 10, 10);
         g2.fillOval(x2 - 5, y2 - 5, 10, 10);
-        // 角弧（始终画angle度）
         g2.setColor(angle > 180 ? new Color(255, 140, 0) : new Color(255, 99, 71));
         g2.setStroke(new BasicStroke(3));
         int arcStart = 0;
         int arcExtent = angle;
         g2.drawArc(cx - r/2, cy - r/2, r, r, arcStart, arcExtent);
-        // 角度数值
         double midAngle = angle / 2.0;
         int tx = cx + (int)((r/2 + 22) * Math.cos(Math.toRadians(midAngle)));
         int ty = cy - (int)((r/2 + 22) * Math.sin(Math.toRadians(midAngle)));
