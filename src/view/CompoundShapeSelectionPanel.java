@@ -32,7 +32,7 @@ public class CompoundShapeSelectionPanel extends JPanel {
             String imgPath = "src/resources/images/task5/Shape " + (idx + 1) + ".jpg";
             ImageIcon icon = new ImageIcon(imgPath);
             Image img = icon.getImage().getScaledInstance(120, 120, Image.SCALE_SMOOTH);
-            JButton btn = new JButton("Shape " + (idx + 1), new ImageIcon(img));
+            JButton btn = new JButton("Shape " + (i + 1), new ImageIcon(img));
             StyleUtil.styleButton(btn, StyleUtil.MAIN_YELLOW, Color.BLACK);
             btn.setFont(StyleUtil.BIG_FONT);
             btn.setPreferredSize(new Dimension(160, 180));
