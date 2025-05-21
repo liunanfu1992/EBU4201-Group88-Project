@@ -1,0 +1,85 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Class Diagram" id="class-diagram">
+    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <!-- 主入口 -->
+        <mxCell id="2" value="ShapervilleApp" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <!-- 主菜单 -->
+        <mxCell id="3" value="MainMenuPanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="60" y="140" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <!-- 主要面板 -->
+        <mxCell id="4" value="ShapeIdentificationPanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;" vertex="1" parent="1">
+          <mxGeometry x="20" y="260" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="5" value="AngleIdentificationPanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;" vertex="1" parent="1">
+          <mxGeometry x="220" y="260" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="6" value="ShapeAreaPanel\nRectangleAreaQuestionPanel\nParallelogramAreaQuestionPanel\nTriangleAreaQuestionPanel\nTrapeziumAreaQuestionPanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;" vertex="1" parent="1">
+          <mxGeometry x="420" y="260" width="220" height="100" as="geometry"/>
+        </mxCell>
+        <mxCell id="7" value="CircleCalculationPanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;" vertex="1" parent="1">
+          <mxGeometry x="660" y="260" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="8" value="CompoundShapeSelectionPanel\nCompoundShapePanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;" vertex="1" parent="1">
+          <mxGeometry x="60" y="360" width="180" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="9" value="SectorSelectionPanel\nSectorAreaPanel\nSectorCalculationPanel" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1D5E7;" vertex="1" parent="1">
+          <mxGeometry x="260" y="360" width="220" height="60" as="geometry"/>
+        </mxCell>
+        <!-- 数据模型 -->
+        <mxCell id="10" value="Question (abstract)\n- questionText\n- correctAnswer\n- score" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;" vertex="1" parent="1">
+          <mxGeometry x="500" y="420" width="180" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="ShapeQuestion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;" vertex="1" parent="1">
+          <mxGeometry x="420" y="540" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="AngleQuestion" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D5E8D4;" vertex="1" parent="1">
+          <mxGeometry x="620" y="540" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="Score" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DAE8FC;" vertex="1" parent="1">
+          <mxGeometry x="740" y="420" width="100" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="ScoreManager (singleton)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="740" y="540" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="ScoringUtil" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="900" y="540" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="ImageLoader" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="900" y="420" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="StyleUtil" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF2CC;" vertex="1" parent="1">
+          <mxGeometry x="900" y="360" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="18" value="ShapeType (enum)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="420" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="19" value="AngleType (enum)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F8CECC;" vertex="1" parent="1">
+          <mxGeometry x="1100" y="540" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <!-- 关系连线 -->
+        <mxCell id="20" style="endArrow=block;html=1;" edge="1" parent="1" source="2" target="3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="21" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="22" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="23" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="6"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="24" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="7"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="25" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="8"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="26" style="endArrow=block;html=1;" edge="1" parent="1" source="3" target="9"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="27" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="11"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="28" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="12"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="29" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="13"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="30" style="endArrow=block;html=1;" edge="1" parent="1" source="13" target="14"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="31" style="endArrow=block;html=1;" edge="1" parent="1" source="14" target="15"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="32" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="16"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="33" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="18"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="34" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="19"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="35" style="endArrow=block;html=1;" edge="1" parent="1" source="10" target="17"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
